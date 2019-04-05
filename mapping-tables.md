@@ -12,3 +12,4 @@
 | dynamic-sized array `T[]`  | :x:  |  :heavy_check_mark: |
 | multi-dimentional array `T[][]` (not sure here) |  :x: | :heavy_check_mark:  |
 | `variable` | :x: | :x: |
+*<sub><sup>For arrays, `T` refers to Type and `k` to the length of the array.</sup></sub>
