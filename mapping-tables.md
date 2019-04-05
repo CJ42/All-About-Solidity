@@ -8,9 +8,9 @@
 | `mapping`  | :x:  | :heavy_check_mark:  |
 | `enum`  | :x:  | :heavy_check_mark:  |
 | `contract`  |  :x: | :heavy_check_mark:  |
-| *fixed-sized array <br>`T[k]`  | :heavy_check_mark:  | :heavy_check_mark:  |
-| *dynamic-sized array <br>`T[]`  | :x:  |  :heavy_check_mark: |
-| *multi-dimentional array <br>`T[][]` (not sure here) |  :x: | :heavy_check_mark:  |
+| * fixed-sized array <br>`T[k]`  | :heavy_check_mark:  | :heavy_check_mark:  |
+| * dynamic-sized array <br>`T[]`  | :x:  |  :heavy_check_mark: |
+| * multi-dimentional array <br>`T[][]` (not sure here) |  :x: | :heavy_check_mark:  |
 | `variable` | :x: | :x: |
 
-*<sub>For arrays, `T` refers to Type and `k` to the length of the array.</sub>
+* <sub>For arrays, `T` refers to Type and `k` to the length of the array.</sub>
