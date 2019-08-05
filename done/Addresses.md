@@ -80,7 +80,7 @@ When prefixed with 0x, the address actually becomes 42 characters long. Ethereum
 
 In Solidity, you define a variable as an address type by simply specifying the keyword `address` in front of the variable name.
 
-```
+```solidity
 address user = msg.sender
 ````
 
@@ -91,7 +91,7 @@ Here we use the Solidity built-in function msg.sender to retrieve the address of
 
 Address literals are the hexadecimal representation of an Ethereum address (prefixed with 0x) that pass the checksum test. (Apparently their size range from 39 to 41 digits). You can declare address literals in Solidity as follow :
 
-```
+```solidity
 address owner = 0xc0ffee254729296a45a3885639ac7e10F9d54979
 ```
 
@@ -103,7 +103,7 @@ This looks like an address but has an invalid checksum. Correct checksummed addr
 
 To silence the error, copy and paste the address provided with the valid checksum :
 
-```
+```solidity
 address owner = 0xc0ffee254729296a45a3885639AC7E10F9d54979
 ```
 
@@ -148,7 +148,7 @@ Starting from version 0.5.0 of Solidity, **contracts do not derive from the addr
 
 Let's assume the following code :
 
-```
+```solidity
 contract NotPayable {
 
     // No payable function here
@@ -234,7 +234,7 @@ _picture here_
 
 There is two methods to look at an Ethereum address / Contract address balance. (NB: the address below is a vanity address).
 
-```
+```solidity
 address public _account = msg.sender;
 
 // look-up balance from sender (Method 1)
