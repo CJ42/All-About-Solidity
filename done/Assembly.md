@@ -80,6 +80,242 @@ Solidity defines two type of implementation of the Assembly language :
 
 ----------
 
+## Visualise the assembly code of your Solidity contract.
+
+Before to dive into the assembly code, let's have a look of the EVM assembly code of a Solidity contract. 
+
+### Installing the solc compiler
+
+We are going to use the the solidity compiler `solc` via the CLI. You can install it globally on your local machine using the following npm command :
+
+```
+npm install -g solc
+```
+
+### Creating our project structure.
+
+Go into your Desktop, create a directory and go into it.
+
+```
+mkdir All-About-Solidity
+cd All-About-Solidity
+```
+
+You can now create a new contract file.
+
+```
+// If you use visual studio code, this will open the file automatically
+code assembly.sol
+
+// Other, use the `touch` UNIX command
+touch assembly.sol
+```
+
+### Creating and compiling a sample contract
+
+Copy and paste the following code in the file `assembly.sol`
+
+
+```solidity
+pragma solidity ^0.5.0;
+
+contract Assembly {
+
+    uint my_score = 5;
+    
+    constructor() public {
+        my_score = 10;
+    }
+}
+```
+
+This contract doesn't do anything special. It just contains a state variable `my_score` of type `uint256` (remember that `int` and `uint` refer by default to 256 bits signed or unsigned integers). When the contract is instantiated (or deployed in Ethereum jargon), it assigns a value of 10 to our `my_score` variable.
+
+Because we are not using **Remix** here, we are not warned by any errors while we code. So let's first try to compile our contract to make sure it does not contain any errors. You can compile a Solidity contract using the following command in the CLI.
+
+```
+solc assembly.sol
+
+// Output expected
+Compiler run successful, no output requested.
+```
+
+The `solc` CLI tool contains really powerful features. Let's have a look to it. Like any CLI tool, you can see the options and flags available using the `--help` flag. Try it on your terminal : 
+
+```
+solc --help
+
+solc, the Solidity commandline compiler.
+[...]     // Description
+
+Allowed options :
+[...]     // options available
+
+Output Components
+[...]                // We are interested in the following output options
+
+--asm                EVM assembly of the contracts.
+--asm-json           EVM assembly of the contracts in JSON format.
+--opcodes            Opcodes of the contracts.
+--bin                Binary of the contracts in hex.
+
+[...]
+```
+
+The solc compiler gives you the option to display the assembly, opcode or binary version of your contract after compilation. We can have a try to see exactly what does it looks like. Type the following :
+
+```
+solc assembly.sol --asm
+```
+ 
+ The following should be displayed in the CLI. 
+ 
+ ```
+======= assembly.sol:Assembly =======
+EVM assembly:
+    /* "assembly.sol":25:131  contract Assembly {... */
+  mstore(0x40, 0x80)
+    /* "assembly.sol":66:67  5 */
+  0x05
+    /* "assembly.sol":50:67  uint my_score = 5 */
+  0x00
+  sstore
+    /* "assembly.sol":78:129  constructor() public {... */
+  callvalue
+    /* "--CODEGEN--":8:17   */
+  dup1
+    /* "--CODEGEN--":5:7   */
+  iszero
+  tag_1
+  jumpi
+    /* "--CODEGEN--":30:31   */
+  0x00
+    /* "--CODEGEN--":27:28   */
+  dup1
+    /* "--CODEGEN--":20:32   */
+  revert
+    /* "--CODEGEN--":5:7   */
+tag_1:
+    /* "assembly.sol":78:129  constructor() public {... */
+  pop
+    /* "assembly.sol":120:122  10 */
+  0x0a
+    /* "assembly.sol":109:117  my_score */
+  0x00
+    /* "assembly.sol":109:122  my_score = 10 */
+  dup2
+  swap1
+  sstore
+  pop
+    /* "assembly.sol":25:131  contract Assembly {... */
+  dataSize(sub_0)
+  dup1
+  dataOffset(sub_0)
+  0x00
+  codecopy
+  0x00
+  return
+stop
+
+sub_0: assembly {
+        /* "assembly.sol":25:131  contract Assembly {... */
+      mstore(0x40, 0x80)
+      0x00
+      dup1
+      revert
+
+    auxdata: 0xa265627a7a72305820538db90c853f78eff41184acc184f577d7e1784e8f306928874755530dd8b0ed64736f6c63430005090032
+}
+```
+
+We can also see our Assembly code in JSON format for a more detailed and structured view. Try it and type the following CLI command :
+
+```
+solc assembly.sol --asm-json
+```
+
+The following should appear :
+
+```
+======= assembly.sol:Assembly =======
+EVM assembly:
+{
+  ".code" : 
+  [
+    {
+      "begin" : 25,
+      "end" : 131,
+      "name" : "PUSH",
+      "value" : "80"
+    },
+    {
+      "begin" : 25,
+      "end" : 131,
+      "name" : "PUSH",
+      "value" : "40"
+    },
+    {
+      "begin" : 25,
+      "end" : 131,
+      "name" : "MSTORE"
+    },
+    {
+      "begin" : 66,
+      "end" : 67,
+      "name" : "PUSH",
+      "value" : "5"
+    },
+    {
+      "begin" : 50,
+      "end" : 67,
+      "name" : "PUSH",
+      "value" : "0"
+    },
+    {
+      "begin" : 50,
+      "end" : 67,
+      "name" : "SSTORE"
+    },
+    {
+      "begin" : 78,
+      "end" : 129,
+      "name" : "CALLVALUE"
+    },
+    
+    ...        // More code below, we stop here for brievity
+    
+```
+
+### Diving into our contract in Assembly
+
+Let's try to break down part by part the assembly code. The output has the format described below. Each line corresponds to an EVM opcode associated with a comment (written above the opcode) that specifies where does it relate to in our Solidity contract.
+
+```
+   /* Solidity code with source file */
+   opcode
+```
+
+As such, we can track easily which low-level instruction with high-level code (Solidity). Let's try to understand the following lines.
+
+```
+    /* "assembly.sol":66:67  5 */
+  0x05
+    /* "assembly.sol":50:67  uint my_score = 5 */
+  0x00
+  sstore
+```
+
+What happen in brief is that we allocate a slot in storage for our state variable `my_score`. In the EVM, the storage is simply a list of key-value pair (like an array), where the key corresponds to an index in our storage, and the value is the value associated with this key.
+
+1. 5 (0x05) is pushed onto the stack. This is the value of our `my_score` variable.
+2. 0 (0x00) is pushed onto the stack. The is going to be the index in our storage where we will store our variable `my_score`.
+3. [`sstore`](https://ethervm.io/#55) takes the two parameters in 1. and 2. from our stack to create our storage slot.
+
+**Let's now look at our constructor function**
+
+
+
+
 ## Basics of Assembly syntax in Solidity
 
 Assembly parses comments, literals and identifiers in the same way as Solidity does. Therefore, you can use the usual `//` and `/* */` inside your assembly code.
