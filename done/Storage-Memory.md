@@ -41,3 +41,9 @@ CallData is almost free but has a limited size !
 ## When to use the keywords Storage, Memory and CallData ?
 
 Any variable of complex type like array, struct, mapping or enum must specify a data location.
+
+---
+
+# References
+
+- [Hackernoon - Getting Deep into Ethereum: how data is stored ?](https://hackernoon.com/getting-deep-into-ethereum-how-data-is-stored-in-ethereum-e3f669d96033)
