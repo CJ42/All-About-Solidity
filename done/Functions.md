@@ -36,6 +36,12 @@ function() public payable {}
 ```
 Show some code about how to define some code in a fallback function.
 
+# Variables as function type
+
+https://solidity.readthedocs.io/en/v0.5.11/types.html#function-types
+
+---
+
 # Recursive Functions : How to prevent Re-Entrancy Attacks ?
 A recursive function is a function that can reference itself and re-call itself several times. They occur in scenario where you have a base case (if) and an induction case (else). 
 Recursive functions are dangerous in Solidity, because they are the gateway for re-entrancy attacks (See the case of the DAO hack for more details). The danger most of the time lies in the induction case. If the base case is reached, the function stops. However, if the induction case is not reached, the function can re-execute again.
