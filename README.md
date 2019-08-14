@@ -1,3 +1,3 @@
-## The All about Ethereum series
+## The All about Solidity serie
 
-coming soon...
+under development
