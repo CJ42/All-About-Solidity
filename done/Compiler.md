@@ -63,7 +63,7 @@ solc first-contract.sol --ast
 
 You should obtain the following output :
 
-```solidity
+```
 ======= first-contract.sol =======
 PragmaDirective
    Source: "pragma solidity >=0.4.16 <0.7.0;"
