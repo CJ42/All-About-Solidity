@@ -42,6 +42,14 @@ https://solidity.readthedocs.io/en/v0.5.11/types.html#function-types
 
 ---
 
+# Understanding Function Signatures
+
+To understand what is a function signature, we need to go a bit more into the details of the Solidity compiler and the EVM. But first, let's define a function signature in Solidity.
+
+## What is a function signature ?
+
+
+
 # Recursive Functions : How to prevent Re-Entrancy Attacks ?
 A recursive function is a function that can reference itself and re-call itself several times. They occur in scenario where you have a base case (if) and an induction case (else). 
 Recursive functions are dangerous in Solidity, because they are the gateway for re-entrancy attacks (See the case of the DAO hack for more details). The danger most of the time lies in the induction case. If the base case is reached, the function stops. However, if the induction case is not reached, the function can re-execute again.
