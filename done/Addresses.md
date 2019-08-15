@@ -5,9 +5,10 @@ Introduction
 1) What is an Ethereum Address ? (Technically)
 2) Address payable
 3) Available methods with addresses (Solidity)
-4) Zero addresses
-5) Addresses related to Web3.js
-6) Advanced Topics
+4) Check if an address exists
+5) Zero addresses
+6) Addresses related to Web3.js
+7) Advanced Topics
 References
 
 
@@ -195,7 +196,18 @@ Let's look at our Hello World contract to understand :
 The following operators are available with addresses : <=, <, ==, !=, >= and > .
 
 
+## Check if an address exists
 
+You can if an address exists for instance using the following statement :
+
+```solidity
+modifier addressExist(address _address) {
+    require(_address != address(0));
+    _;
+}
+```
+
+This method simply use type casting. The number `0` is casted into an address type, so it generates a 20 bytes value as follow : `0x0000000000000000000000000000000000000000`
 
 ---
 
