@@ -12,6 +12,26 @@ Note that there is no type conversion from non-boolean to boolean types as there
 
 ### If … Else Statements
 
+As a shorthand, you can write a single `if` statement without curly braces `{}`. Here are two examples derived from the [Gnosis MultiSigWallet contract](https://github.com/gnosis/MultiSigWallet/blob/master/contracts/MultiSigWallet.sol).
+
+Method 1 : on the same line.
+
+```solidity
+/// @dev Fallback function allows to deposit ether.
+function() external payable {
+    if (msg.value > 0) emit Deposit(msg.sender, msg.value);
+}
+```
+
+Method 2 : on a different line.
+```solidity
+/// @dev Fallback function allows to deposit ether.
+function() external payable {
+    if (msg.value > 0)
+        emit Deposit(msg.sender, msg.value);
+}
+```
+
 ---
 
 ### For Loops
