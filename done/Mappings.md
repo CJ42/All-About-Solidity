@@ -80,6 +80,8 @@ function currentLevel(address userAddress) public view returns (uint) {
 ## Use a Mapping as a ValueType inside another Mapping
 If the _ValueType of a mapping turns up to be a mapping too, then the getter function will have a single parameter for every _KeyType recursively.
 
+_Use this good example fromt the Solidity documentation: _https://solidity.readthedocs.io/en/v0.5.11/miscellaneous.html#mappings-and-dynamic-arrays
+
 ---
 
 ## Iterate through a mapping
