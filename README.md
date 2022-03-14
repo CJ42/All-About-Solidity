@@ -4,7 +4,10 @@
 
 You will find code snippets and analogies that will help you understand and improve your Solidity programming skills.
 
-Enjoy the reading!
+**Enjoy the reading!**
+
+| :construction: | _I am currently undergoing a reorganisation of the articles. You can find most of them as draft with notes under the /[draft](./draft/) folder_ |
+| :------------: | :---------------------------------------------------------------------------------------------------------------------------------------------- |
 
 ## Table of Content
 
