@@ -1,6 +1,8 @@
 # All About Solidity
 
-![All About Solidity Character](./assets/all-about-solidity-character-medium.png)
+<p align="center">
+  <img width="460" height="300" src="./assets/all-about-solidity-character-medium.png">
+</p>
 
 **All About Solidity** is an article serie that covers most of the core feature, syntax and semantics of Solidity, the smart contract programming language for Ethereum or any EVM based blockchains.
 
