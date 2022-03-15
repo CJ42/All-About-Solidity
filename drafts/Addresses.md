@@ -2,15 +2,15 @@
 
 Table of Content
 Introduction
-1) What is an Ethereum Address ? (Technically)
-2) Address payable
-3) Available methods with addresses (Solidity)
-4) Check if an address exists
-5) Zero addresses
-6) Addresses related to Web3.js
-7) Advanced Topics
-References
 
+1. What is an Ethereum Address ? (Technically)
+2. Address payable
+3. Available methods with addresses (Solidity)
+4. Check if an address exists
+5. Zero addresses
+6. Addresses related to Web3.js
+7. Advanced Topics
+   References
 
 ---
 
@@ -21,6 +21,7 @@ Addresses in Ethereum are unique identifiers, since they are derived from either
 In the payment portion of an Ethereum transaction, the intended recipient is represented by an Ethereum address. This is the same as the beneficiary account in a bank transfer (Wood and Antonopoulos, 2018).
 
 There are two types of addresses in Ethereum :
+
 - Externally Owned Accounts (EOA) : these accounts are controlled by their private key.
 
 The private key enable private control over access to any ether in the account and over any authentication the account needs when using smart contracts. They are the unique piece of information needed to create digital signatures, required to sign transactions to spend any funds in the account.
@@ -34,6 +35,7 @@ Each contract's address is derived from the contract creation transaction, as a 
 ---
 
 ## What is an Ethereum Address (Technically)
+
 Hash functions are the key to transform Ethereum public keys (or contracts) into addresses. Ethereum uses the keccak-256 hash function to generate addresses in the following way.
 
 _yellow paper image_
@@ -49,7 +51,7 @@ This article from Vincent Kobel gives you a good indication step-by-step of how 
 
 ```
 pubKey = 6e145ccef1033dea239875dd00dfb4fee6e3348b84985c92f103444683bae07b83b5c38e5e...
-````
+```
 
 2. Apply the Keccak-256 hash to the public key. You should obtain a string that is 64 characters / 32 bytes long.
 
@@ -59,8 +61,8 @@ Keccak256(pubKey) = 2a5bc342ed616b5ba5732269001d3f1ef827552ae1114027bd3ecf1f086b
 
 3. Take the last 40 characters / 20 bytes (least significant bytes) of the resulting hash. Or, in other words, drop the first 24 characters / 12 bytes. These 40 characters / 20 bytes are the address (they are in bold below).
 
-
 `2a5bc342ed616b5ba5732269`**`001d3f1ef827552ae1114027bd3ecf1f086ba0f9`**
+
 ```
 Address = 0x001d3f1ef827552ae1114027bd3ecf1f086ba0f9
 ```
@@ -70,10 +72,9 @@ When prefixed with 0x, the address actually becomes 42 characters long. Ethereum
 ```
 0x001d3f1ef827552ae1114027bd3ecf1f086ba0f9 or
 0X001D3F1EF827552AE1114027BD3ECF1F086BA0F9
-````
+```
 
-*How is the address of an Ethereum contract computed ?*
-
+_How is the address of an Ethereum contract computed ?_
 
 ---
 
@@ -83,10 +84,9 @@ In Solidity, you define a variable as an address type by simply specifying the k
 
 ```solidity
 address user = msg.sender
-````
+```
 
 Here we use the Solidity built-in function msg.sender to retrieve the address of the account that interacted with the smart contract.
-
 
 ## Address literals
 
@@ -114,14 +114,13 @@ Address literals that do not pass the checksum test bring up an error message. (
 
 **Address literals** (hexadecimal representation of an address) are by default set as `address payable`.
 
-
 ## address vs address payable ?
+
 The distinction between `address` and `address payable` was introduced with version 0.5.0 of Solidity.
 
 The idea behind this distinction is that `address payable` is an address you can send Ether to, while a simple (plain) `address` cannot be sent Ether.
 
 When assigning the keyword payable to an address variable in Solidity, the address (variable) can send and receive Ethers. As a result, all the other methods (transfer, send, call, delegatecall and staticcall) become available for this variable.
-
 
 ## Type conversion between address and address payable
 
@@ -160,11 +159,11 @@ contract Payable {
 
     // Payable function
     function() payable {
-    
+
         // do something with payable function
-        
+
     }
-    
+
 }
 
 
@@ -172,11 +171,11 @@ contract HelloWorld {
 
     address x = address(NotPayable);
     address y = address(Payable);
-    
+
     function hello_world() public pure returns (string memory) {
         return "hello world";
     }
-    
+
 }
 ```
 
@@ -193,8 +192,8 @@ Let's look at our Hello World contract to understand :
 ---
 
 ## Address conversion using operators
-The following operators are available with addresses : <=, <, ==, !=, >= and > .
 
+The following operators are available with addresses : <=, <, ==, !=, >= and > .
 
 ## Check if an address exists
 
@@ -215,15 +214,14 @@ This method simply use type casting. The number `0` is casted into an address ty
 
 As you can imagine, address enable to send funds (Ethers) to other addresses. This sections cover the different methods available.
 
-> **NB:** the _amount specified as functions parameters always represents an Ether amount expressed in Wei (18 zeros):
+> **NB:** the \_amount specified as functions parameters always represents an Ether amount expressed in Wei (18 zeros):
 
 > 1 Ether = 1¹⁸ Wei = 1,000,000,000,000,000,000 wei
 
 _picture here_
-(legend: Members functions available for addresses in Solidity)- - - - 
+(legend: Members functions available for addresses in Solidity)- - - -
 
 ---
-
 
 `address.transfer()`
 
@@ -242,6 +240,7 @@ _picture here_
 
 - - - - 
 `address.balance`
+
 - Returns the account balance in Wei .
 
 There is two methods to look at an Ethereum address / Contract address balance. (NB: the address below is a vanity address).
@@ -251,18 +250,20 @@ address public _account = msg.sender;
 
 // look-up balance from sender (Method 1)
 uint public sender_balance = _account.balance;
-   
+
 // look-up balance from _account (Method 2)
 uint public sender_balance = address(_account).balance;
 
 // look-up balance from the current contract (Method 2)
 uint public contract_balance = address(this).balance;
 ```
-- - - - 
+
+- - - -
 
 `address.call(bytes memory) returns (bool, bytes memory)`
+
 > **WARNING : UNSAFE !**
-The recipient can (accidentally or maliciously) use up all your gas, causing your contract to halt with an OOG exception; always check the return value of call.
+> The recipient can (accidentally or maliciously) use up all your gas, causing your contract to halt with an OOG exception; always check the return value of call.
 
 _picture here_
 
@@ -300,6 +301,7 @@ _picture here_
 
 - - - - 
 `address.callcode(__payload__) (deprecated)`
+
 - Low-level CALLCODE function, like address(this).call(…) but with this contract's code replaced with that of address. Returns false on error. WARNING: advanced use only!
 
 _photo here_
@@ -323,14 +325,12 @@ Function : tx.origin() -> Returns : address payable
 tx.origin returns the address of the originating EOA for this transaction.
 tx.origin returns the full call chain !
 
-
 `block.coinbase()`
 Function : block.coinbase() -> Returns : address payable
 
 `block.coinbase(_address payable)`
 
 The current block miner's address. (Recipient of the current block's fees and block reward).
-
 
 `ecrecover()`
 
@@ -355,6 +355,7 @@ A zero address in Ethereum is also 20 bytes long but contains only empty bytes. 
 ---
 
 ## Addresses related to web3.js
+
 Web3.js and console functions accept addresses with or without this prefix but for transparency we encourage their use. Since each byte of the address is represented by 2 hex characters, a prefixed address is 42 characters long.
 
 ---
@@ -365,23 +366,45 @@ Several apps and APIs are also meant to implement the new checksum-enabled addre
 
 Ethereum Improvement Proposal 55 (EIP-55) : standard to propose backward compatible checksum for Ethereum addresses, by modifying the capitalization of the hexadecimal address.
 
-
-
 ---
 
 ## References
 
-
 - How is the address of an Ethereum contract computed?
-Ethereum Stack Exchange is a question and answer site for users of Ethereum, the decentralized application platform and…ethereum.stackexchange.com
+  Ethereum Stack Exchange is a question and answer site for users of Ethereum, the decentralized application platform and…ethereum.stackexchange.com
 
 - How are ethereum addresses generated?
-Recently this article came to my attention that is way more in depth and technical than my more accessible version…ethereum.stackexchange.com
-Create full Ethereum wallet, keypair and address
+  Recently this article came to my attention that is way more in depth and technical than my more accessible version…ethereum.stackexchange.com
+  Create full Ethereum wallet, keypair and address
 
 This article is a guide on how to generate an ECDSA private key and derive its Ethereum address. Using OpenSSL and…kobl.one
+
 - What is an 'EOA' account?
-Thanks for contributing an answer to Ethereum Stack Exchange! Please be sure to answer the question. Provide details…ethereum.stackexchange.com
+  Thanks for contributing an answer to Ethereum Stack Exchange! Please be sure to answer the question. Provide details…ethereum.stackexchange.com
 
 - Difference between CALL, CALLCODE and DELEGATECALL
-DELEGATECALL basically says that I'm a contract and I'm allowing (delegating) you to do whatever you want to my…ethereum.stackexchange.com
+  DELEGATECALL basically says that I'm a contract and I'm allowing (delegating) you to do whatever you want to my…ethereum.stackexchange.com
+
+```solidity
+<address>.balance(uint256)
+```
+
+```solidity
+<address payable>.transfer(uint256 _amount)
+```
+
+```solidity
+<address payable>.send(uint256 _amount) returns (bool)
+```
+
+```solidity
+<address payable>.call(bytes memory) returns (bool, bytes memory)
+```
+
+```solidity
+<address payable>.delegatecall(bytes memory) returns (bool, bytes memory)
+```
+
+```solidity
+<address payable>.staticcall(bytes memory) returns (bool, bytes memory)
+```
