@@ -25,7 +25,7 @@ Assert that `k != 0` starting from version 0.5.0.
 
 ```
 keccak256(bytes memory) returns (bytes32)
-````
+```
 
 The k`eccak256()` function enables to compute the Keccak-256 hash of the input.
 
@@ -51,7 +51,7 @@ The `sha256` function enables to compute the SHA-256 hash of the input. It retur
 
 ```solidity
 ripemd160(bytes memory) returns (bytes20)
-````
+```
 
 The `ripemd160()` function enables to compute RIPEMD-160 hash of the input
 
@@ -67,7 +67,7 @@ If you are a bit familiar with Bitcoin, you might know that a Bitcoin address is
 
 ```solidity
 ecrecover(bytes32 hash, uint8 v, bytes32 r, bytes32 s) returns (address)
-````
+```
 
 The `ecrecover()` function enables to recover the address associated with the public key from elliptic curve signature. It returns zero on error.
 

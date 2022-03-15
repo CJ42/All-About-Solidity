@@ -56,6 +56,8 @@ The current block timestamp must be strictly larger than the timestamp of the la
 
 **Note:** according to the Solidity documentation, the values of all members of `msg`, including `msg.sender` and `msg.value` can change for every external function call. This includes calls to library functions.
 
+Messages to non-existing contracts are more expensive and thus the execution might run into an Out-of-Gas error. A workaround for this problem is to first send Wei (1 for example) to each of the contracts before you use them in your actual contracts. This is not an issue on the main or test net.
+
 ---
 
 ## Transactions Properties

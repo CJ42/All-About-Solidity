@@ -17,3 +17,10 @@ You will find code snippets and analogies that will help you understand and impr
 - [all about `bool`eans](Boolean.md)
 - [all about ether units](Ether-Units.md)
 - [all about `interface`s.](interfaces.md)
+
+
+## Drafts
+
+- all about tuples
+- all about blocks & transaction properties
+- [all about cryptographic functions](Cryptographic-functions.md))
