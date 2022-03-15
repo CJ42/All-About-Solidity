@@ -2,7 +2,6 @@
 
 Table of Content
 Introduction
-
 1. What is an Ethereum Address ? (Technically)
 2. Address payable
 3. Available methods with addresses (Solidity)

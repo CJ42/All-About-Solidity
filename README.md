@@ -14,4 +14,6 @@ You will find code snippets and analogies that will help you understand and impr
 
 ## Table of Content
 
+- [all about `bool`eans](Boolean.md)
+- [all about ether units](Ether-Units.md)
 - [all about `interface`s.](interfaces.md)
