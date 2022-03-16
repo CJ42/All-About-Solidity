@@ -13,8 +13,6 @@ You will find code snippets and analogies that will help you understand and impr
 > :construction: _I am currently undergoing a re-write of the content of each articles, with **cleaner table of contents**, so to make it easier to jump to relevant sections.
 > You can still read them and browse their draft content with notes under the /[articles](./articles/) folder_
 
-## Full List
-
 **All About...**
 
 |   	|   	|   	|
