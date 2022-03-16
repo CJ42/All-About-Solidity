@@ -13,7 +13,7 @@ You will find code snippets and analogies that will help you understand and impr
 > :construction: _I am currently undergoing a re-write of the content of each articles, with **cleaner table of contents**, so to make it easier to jump to relevant sections.
 > You can still read them and browse their draft content with notes under the /[articles](./articles/) folder_
 
-## Table of Content
+## Full List
 
 **All About...**
 
@@ -29,42 +29,3 @@ You will find code snippets and analogies that will help you understand and impr
 | [compiler](./articles/Compiler.md)  	| [inheritance](./articles/Inheritance.md)  	| [variables (in general)](./articles/Variables.md)  	|
 | [`constructor`](./articles/Constructors.md)  	| [`interface`](./articles/Interfaces.md)  	|   	|
 | [control flow](./articles/Control-Flow.md)  	| [`library`(librarie contracts)](./articles/Libraries.md)  	|   	|
-
-- 
-- 
-- 
-- 
-- 
-- 
-- 
-- 
-- 
-- 
-
-- 
-- 
-- 
-- 
-- 
-- 
-- 
-- 
-- 
-- 
-
-- 
-- 
-- 
-- 
-- 
-- 
-- 
-- 
-
-
-
-
-
-
-
-- 
