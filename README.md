@@ -15,18 +15,20 @@ You will find code snippets and analogies that will help you understand and impr
 
 ## Table of Content
 
+**All About...**
+
 |   	|   	|   	|
 |:---	|:---	|:---	|
-| [all about addresses](./articles/Addresses.md)  	| [all about cryptographic functions](./articles/Cryptographic-functions.md)  	| [all about `mapping`](./articles/Mappings.md)  	|
-| [all about arrays](./Arrays.md)  	| [all about Data Location (`storage`, `memory`, `calldata`)](./articles/Data-Locations.md)  	| [all about `modifier`](./articles/Modifiers.md)  	|
-| [all about assembly](./Assembly.md)  	| [all about `enum`](./articles/Enums.md)  	| [all about numbers](./articles/Numbers.md)  	|
-| [all about blocks & transaction properties](./articles/Blocks-Txs.md)  	| [all about error handling](./articles/Error-Handling.md)  	| [all about strings](./articles/Strings.md)  	|
-| [all about `bool`eans](./articles/Boolean.md)  	| [all about ether units](./articles/Ether-Units.md)  	| [all about style](./articles/Style.md)  	|
-| [all about `bytes`](./Bytes.md)  	| [all about `event`](./articles/Events.md)  	| [all about tuples](./articles/Tuples.md/Tuples.md)  	|
-| [all about comments](./Comments.md)  	| [all about `function`](./articles/Functions.md)  	| [all about `struct`](./articles/Structs.md)  	|
-| [all about compiler](./articles/Compiler.md)  	| [all about inheritance](./articles/Inheritance.md)  	| [all about variables (in general)](./articles/Variables.md)  	|
-| [all about `constructor`](./articles/Constructors.md)  	| [all about `interface`](./articles/Interfaces.md)  	|   	|
-| [all about control flow](./articles/Control-Flow.md)  	| [all about `library`(librarie contracts)](./articles/Libraries.md)  	|   	|
+| [`address`](./articles/Addresses.md)  	| [cryptographic functions](./articles/Cryptographic-functions.md)  	| [`mapping`](./articles/Mappings.md)  	|
+| [arrays](./Arrays.md)  	| [Data Location (`storage`, `memory`, `calldata`)](./articles/Data-Locations.md)  	| [`modifier`](./articles/Modifiers.md)  	|
+| [assembly](./Assembly.md)  	| [`enum`](./articles/Enums.md)  	| [numbers](./articles/Numbers.md)  	|
+| [blocks & transaction properties](./articles/Blocks-Txs.md)  	| [error handling](./articles/Error-Handling.md)  	| [`string`](./articles/Strings.md)  	|
+| [`bool`](./articles/Boolean.md)  	| [ether units](./articles/Ether-Units.md)  	| [style](./articles/Style.md)  	|
+| [`bytes`](./Bytes.md)  	| [`event`](./articles/Events.md)  	| [tuples](./articles/Tuples.md/Tuples.md)  	|
+| [comments](./Comments.md)  	| [`function`](./articles/Functions.md)  	| [`struct`](./articles/Structs.md)  	|
+| [compiler](./articles/Compiler.md)  	| [inheritance](./articles/Inheritance.md)  	| [variables (in general)](./articles/Variables.md)  	|
+| [`constructor`](./articles/Constructors.md)  	| [`interface`](./articles/Interfaces.md)  	|   	|
+| [control flow](./articles/Control-Flow.md)  	| [`library`(librarie contracts)](./articles/Libraries.md)  	|   	|
 
 - 
 - 
