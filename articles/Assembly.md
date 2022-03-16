@@ -5,6 +5,21 @@
 
 ![](https://cdn-images-1.medium.com/max/2600/1*OCoLQtXw8KFQ1eHf_jiBYQ.jpeg)
 
+**Table of content**
+- What is Assembly
+- Why use Assembly in Solidity?
+  - Understand the EVM and the Stack first
+  - Assembly and the EVM
+- Gas cost reduction with Assembly
+- Two types of Assembly in Solidity
+- Visualise the assembly code of your Solidity contract.
+  - Installing the solc compiler
+  - Creating our project structure.
+  - Creating and compiling a sample contract
+- Diving into our contract in Assembly
+- Basics of Assembly syntax in Solidity
+- How to use inline Assembly in Solidity ?
+
 ## What is Assembly ?
 
 Assembly language is a low-level language used to communicate directly with the processor. A high level language such as C, Go, or Java is compiled down to assembly before execution.

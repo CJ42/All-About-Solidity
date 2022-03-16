@@ -15,7 +15,7 @@ According to the Solidity Documentation:
 
 ## Tuples in Solidity
 
-Solidity are not a proper types in Solidity. There is no `tuple` keyword is Solidity. Therefore, you can’t assign a **tuple** as a type to a variable.
+Tuples are not a proper types in Solidity. There is no `tuple` keyword is Solidity. Therefore, you can’t assign a **tuple** as a type to a variable.
 
 However, the official documentation states that Solidity internally allows tuple types and can only be used to form syntactic group of expressions.
 
