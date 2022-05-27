@@ -125,6 +125,46 @@ function test(string memory input) public {
 }
 ```
 
+Here the string passed as a parameter in the calldata is copied in memory via the opcode CALLDATACOPY.
+
+The EVM uses this opcode giving it 3 parameters:
+1) the destination (offset) in memory
+2) the source (offset) in the calldata
+3) the number of bytes to copy
+
+The parameters are the following in our scenario:
+1) memory destination = 0xa0 = the place in memory that was allocated for our string (*find the sequence of opcodes that does this*)
+2) source in calldata = 0x44 = 68 bytes (4 bytes selector + 32 bytes for the offset + 32 bytes for the string length, this is where the string start)
+3) number of bytes to copy = 0x12 = 18 in decimal = the number of characters in our string
+
+298 JUMPDEST        44 | a0 | 12 | 0173 | a0 | 80 | ...
+299 DUP3            12 | 44 | a0 | 12 | 0173 | a0 | 80 | ...
+300 DUP2            44 | 12 | 44 | a0 | 12 | 0173
+301 DUP4            a0 | 44 | 12 | 44 | a0 | 12 | 0173
+302 CALLDATACOPY    44 | a0 | 12 | 0173
+303 PUSH1 00        00 | 44 | a0 | 12 | 0173
+305 DUP4            12 | 00 | 44 | a0 | 12 | 0173
+306 DUP4            a0 | 12 | 00 | 44 | a0 | 12 | 0173
+307 ADD             b2 | 00 | 44 | a0 | 12 | 0173
+308 MSTORE          44 | a0 | 12 | 0173     I am not sure what it does here
+309 POP             // clear the stack  
+310 POP
+311 POP
+312 JUMP
+
+The rest of the opcodes are about clearing the stack
+
+
+## Calldata
+
+0xf9fbd554
+  0000000000000000000000000000000000000000000000000000000000000020
+  0000000000000000000000000000000000000000000000000000000000000012
+  416c6c2041626f757420536f6c69646974790000000000000000000000000000
+
+## Full opcodes
+
+
 ```
 000 PUSH1 80    
 002 PUSH1 40
@@ -231,9 +271,3 @@ function test(string memory input) public {
 092 JUMP
 093 JUMPDEST
 ```
-
-
-0xf9fbd554
-  0000000000000000000000000000000000000000000000000000000000000020
-  0000000000000000000000000000000000000000000000000000000000000012
-  416c6c2041626f757420536f6c69646974790000000000000000000000000000
