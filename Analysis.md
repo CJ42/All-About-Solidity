@@ -156,30 +156,30 @@ When a parameter is given the data location `memory`, the EVM perform the follow
 ; 1) load the string offset from the calldata
 213 JUMPDEST
 214 PUSH1 00
-216 DUP3            // here we put back 4 on top of the stack
+216 DUP3            ; here we put back 4 on top of the stack
 217 ADD
-218 CALLDATALOAD    // here we load the calldata starting at offset/index 4 (so excluding the selector). It will return 0x20, the offset where the string value (length + string itself) start
+218 CALLDATALOAD    ; here we load the calldata starting at offset/index 4 (so excluding the selector). It will return 0x20, the offset where the string value (length + string itself) start
 
-// There is also a check to ensure that the string offset is the maximum offset allowed (which is the max uint64 value basically)
+; There is also a check to ensure that the string offset is the maximum offset allowed (which is the max uint64 value basically)
 
-// 2) Load the string length onto the stack
+; 2) Load the string length onto the stack
 
-// 2.1) calculate the offset where the offset in the calldata (0x20 + 0x04) where the string length is located
+; 2.1) calculate the offset where the offset in the calldata (0x20 + 0x04) where the string length is located
 243 JUMPDEST       
 244 PUSH2 00ff     
 247 DUP5            
 248 DUP3           
-249 DUP6            // prepare the stack by putting back relevant items up onto the stack
-250 ADD             // Here we add 4 bytes (the selector we discard in the calldata) + the offset we previously loaded (0x20). We obtain 0x24
+249 DUP6            ; prepare the stack by putting back relevant items up onto the stack
+250 ADD             ; Here we add 4 bytes (the selector we discard in the calldata) + the offset we previously loaded (0x20). We obtain 0x24
 251 PUSH2 0091      
-254 JUMP            // here we jump at instruction 145
+254 JUMP            ; here we jump at instruction 145
 
-// 2.2) load the string length from the calldata onto the stack
+; 2.2) load the string length from the calldata onto the stack
 166 JUMPDEST
 167 DUP2
 168 CALLDATALOAD
 
-// 2.3) calculate the offset to load the string itself
+; 2.3) calculate the offset to load the string itself
 169 PUSH2 00b6
 172 DUP5
 173 DUP3
@@ -187,42 +187,42 @@ When a parameter is given the data location `memory`, the EVM perform the follow
 176 DUP7
 177 ADD
 
-// 3) allocate some memory space to move the string out of the calldata into memory
+; 3) allocate some memory space to move the string out of the calldata into memory
 
-// 3.1) load the current free memory pointer
+; 3.1) load the current free memory pointer
 291 JUMPDEST
 292 PUSH1 00
 294 PUSH1 40
-296 MLOAD     // load the free memory pointer
+296 MLOAD     ; load the free memory pointer
 
-// 3.2) calculate the new free memory pointer 
-// new free memory pointer = current memory pointer + 64 bytes (32 bytes for string length + 32 bytes for string word)
+; 3.2) calculate the new free memory pointer 
+; new free memory pointer = current memory pointer + 64 bytes (32 bytes for string length + 32 bytes for string word)
 374 JUMPDEST
 375 DUP2
 376 ADD
 
-// 3.3) update the free memory pointer
+; 3.3) update the free memory pointer
 405 JUMPDEST
 406 DUP1
 407 PUSH1 40
-409 MSTORE    // update the free memory pointer (before was)
+409 MSTORE    ; update the free memory pointer (before was)
 
-// 4) write the string in memory
+; 4) write the string in memory
 
-// 4.1) write the string length in memory using MSTORE
+; 4.1) write the string length in memory using MSTORE
 098 JUMPDEST
 099 SWAP1
 100 POP
-101 DUP3      // put the string length 0x12 (18 characters) back on top of the stack
-102 DUP2      // put the allocated memory pointer back on top of the stack
-103 MSTORE    // store the string length in memory at memory offset 0x80
+101 DUP3      ; put the string length 0x12 (18 characters) back on top of the stack
+102 DUP2      ; put the allocated memory pointer back on top of the stack
+103 MSTORE    ; store the string length in memory at memory offset 0x80
 
-// 4.2) copy the string from the calldata into the memory using CALLDATACOPY opcode
+; 4.2) copy the string from the calldata into the memory using CALLDATACOPY opcode
 350 JUMPDEST
 351 DUP3
 352 DUP2
 353 DUP4
-354 CALLDATACOPY    // copy the string from the calldata into memory
+354 CALLDATACOPY    ; copy the string from the calldata into memory
 ```
 
 ### CALLDATACOPY
@@ -274,7 +274,7 @@ The rest of the opcodes are about clearing the stack
   <summary>Click to see the details of the debugged opcodes</summary>
 
 ```asm
-// Free memory pointer
+; Free memory pointer
 000 PUSH1 80    
 002 PUSH1 40
 004 MSTORE
@@ -282,17 +282,17 @@ The rest of the opcodes are about clearing the stack
 006 DUP1
 007 ISZERO
 008 PUSH2 0010
-011 JUMPI           // all of that is just creating + allocating the free memory pointer + checking if no value is passed in the call (because the function is not payable). If there are some value passed in the call, it will revert. If not the case, it will jump to instruction 16 (0x10)
+011 JUMPI           ; all of that is just creating + allocating the free memory pointer + checking if no value is passed in the call (because the function is not payable). If there are some value passed in the call, it will revert. If not the case, it will jump to instruction 16 (0x10)
 
-// calldata verification
+; calldata verification
 016 JUMPDEST
 017 POP
 018 PUSH1 04
 020 CALLDATASIZE
-021 LT              // this ensure that the calldata is at least 4 bytes (= a function selector). If it's not the case, it will jump to instruction nb 43 (0x4b), at which the EVM has instructions to revert
+021 LT              ; this ensure that the calldata is at least 4 bytes (= a function selector). If it's not the case, it will jump to instruction nb 43 (0x4b), at which the EVM has instructions to revert
 022 PUSH2 002b
 
-// function dispatcher
+; function dispatcher
 025 JUMPI
 026 PUSH1 00
 028 CALLDATALOAD
@@ -301,7 +301,7 @@ The rest of the opcodes are about clearing the stack
 032 DUP1
 033 PUSH4 f9fbd554
 038 EQ
-039 PUSH2 0030      // dispatcher -> load the calldata, shift the calldata to extract only the first 4 bytes and go to the function
+039 PUSH2 0030      ; dispatcher -> load the calldata, shift the calldata to extract only the first 4 bytes and go to the function
 042 JUMPI
 
 048 JUMPDEST
@@ -309,7 +309,7 @@ The rest of the opcodes are about clearing the stack
 052 PUSH1 04
 054 DUP1
 055 CALLDATASIZE
-056 SUB             // remove 4 bytes (the function selector) to the size of the calldata? (not sure if correct)
+056 SUB             ; remove 4 bytes (the function selector) to the size of the calldata? (not sure if correct)
 057 DUP2
 058 ADD
 059 SWAP1
@@ -328,88 +328,88 @@ The rest of the opcodes are about clearing the stack
 199 SLT
 200 ISZERO
 201 PUSH2 00d5
-204 JUMPI           // ??? not sure what this section does
+204 JUMPI           ; ??? not sure what this section does
 
-// 1. load the string offset from the calldata
+; 1. load the string offset from the calldata
 213 JUMPDEST
 214 PUSH1 00
-216 DUP3            // here we put back 4 on top of the stack
+216 DUP3            ; here we put back 4 on top of the stack
 217 ADD
-218 CALLDATALOAD    // here we load the calldata starting at offset/index 4 (so excluding the selector). It will return 0x20, the offset where the string value (length + string itself) start
+218 CALLDATALOAD    ; here we load the calldata starting at offset/index 4 (so excluding the selector). It will return 0x20, the offset where the string value (length + string itself) start
 219 PUSH8 ffffffffffffffff
-228 DUP2            // duplicate the string offset retrieved (0x20)
-229 GT              // check that the string offset is not greater than 0xffffffffffffffff (18_446_744_073_709_551_615), which is basically the max value allowed for a uint64 (= bytes8)
-230 ISZERO          // ??? not sure what the rest is
-231 PUSH2 00f3      // JUMP Destination = instruction nb 243 (0x00f3)
-234 JUMPI   // JUMP if the result of the previous comparison is 0
+228 DUP2            ; duplicate the string offset retrieved (0x20)
+229 GT              ; check that the string offset is not greater than 0xffffffffffffffff (18_446_744_073_709_551_615), which is basically the max value allowed for a uint64 (= bytes8)
+230 ISZERO          ; ??? not sure what the rest is
+231 PUSH2 00f3      ; JUMP Destination = instruction nb 243 (0x00f3)
+234 JUMPI   ; JUMP if the result of the previous comparison is 0
 
-// 2.1) calculate calldata offset where the string length is located
-243 JUMPDEST        // 20 | 00 | 04 | 64 | 45 | 4a | f9fbd554
-244 PUSH2 00ff      // ff | 20 | 00 | 04 | 64 | 45 | 4a | f9fbd554
-247 DUP5            // 64 | ff | 20 | 00 | 04 | 64 | 45 | 4a | f9fbd554
-248 DUP3            // 20 | 64 | ff | 20 | 00 | 04 | 64 | 45 | 4a | f9fbd554
-249 DUP6            // 04 | 20 | 64 | ff | 20 | 00 | 04 | 64 | 45 | 4a | f9fbd554
-250 ADD             // 24 | 64 | ff | 20 | 00 | 04 | 64 | 45 | 4a | f9fbd554        Here we add 4 bytes (the selector we discard in the calldata) + the offset we previously loaded (0x20). We obtain 0x24
+; 2.1) calculate calldata offset where the string length is located
+243 JUMPDEST        ; 20 | 00 | 04 | 64 | 45 | 4a | f9fbd554
+244 PUSH2 00ff      ; ff | 20 | 00 | 04 | 64 | 45 | 4a | f9fbd554
+247 DUP5            ; 64 | ff | 20 | 00 | 04 | 64 | 45 | 4a | f9fbd554
+248 DUP3            ; 20 | 64 | ff | 20 | 00 | 04 | 64 | 45 | 4a | f9fbd554
+249 DUP6            ; 04 | 20 | 64 | ff | 20 | 00 | 04 | 64 | 45 | 4a | f9fbd554
+250 ADD             ; 24 | 64 | ff | 20 | 00 | 04 | 64 | 45 | 4a | f9fbd554        Here we add 4 bytes (the selector we discard in the calldata) + the offset we previously loaded (0x20). We obtain 0x24
 251 PUSH2 0091      
-254 JUMP            // here we jump at instruction 145
+254 JUMP            ; here we jump at instruction 145
 
-// Don't understand what this check is used for here
+; Don't understand what this check is used for here
 145 JUMPDEST        
-146 PUSH1 00        // 00 | 24 | 64 | ff | 20 | 00 | 04 | 64 | 45 | 4a | f9fbd554
-148 DUP3            // 64 | 00 | 24 | 64 | ff | 20 | 00 | 04 | 64 | 45 | 4a | f9fbd554
-149 PUSH1 1f        // 1f | 64 | 00 | 24 | 64 | ff | 20 | 00 | 04 | 64 | 45 | 4a | f9fbd554
-151 DUP4            // 24 | 1f | 64 | 00 | 24 | 64 | ff | 20 | 00 | 04 | 64 | 45 | 4a | f9fbd554    36 bytes (0x24) (32 bytes + 4 bytes for the selector) + 31 (0x1f, what does that represent?)
-152 ADD             // 43 | 64 | 00 | 24 | 64 | ff | 20 | 00 | 04 | 64 | 45 | 4a | f9fbd554
-153 SLT             // 01 | 00 | 24 | 64 | ff | 20 | 00 | 04 | 64 | 45 | 4a | f9fbd554      signed less than comparison. We check if 0x43 (= 67) is less than (<) 0x64 (=100). I think 100 is the whole calldata (4bytes selector + offset + length + string as 32 bytes word). I am not sure what this is used for.
-154 PUSH2 00a6      // 00a6 | 01 | 00 | 24 | 64 | ff | 20 | 00 | 04 | 64 | 45 | 4a | f9fbd554   JUMP to instruction nb 166 if it is 1 (the comparison before was true)
+146 PUSH1 00        ; 00 | 24 | 64 | ff | 20 | 00 | 04 | 64 | 45 | 4a | f9fbd554
+148 DUP3            ; 64 | 00 | 24 | 64 | ff | 20 | 00 | 04 | 64 | 45 | 4a | f9fbd554
+149 PUSH1 1f        ; 1f | 64 | 00 | 24 | 64 | ff | 20 | 00 | 04 | 64 | 45 | 4a | f9fbd554
+151 DUP4            ; 24 | 1f | 64 | 00 | 24 | 64 | ff | 20 | 00 | 04 | 64 | 45 | 4a | f9fbd554    36 bytes (0x24) (32 bytes + 4 bytes for the selector) + 31 (0x1f, what does that represent?)
+152 ADD             ; 43 | 64 | 00 | 24 | 64 | ff | 20 | 00 | 04 | 64 | 45 | 4a | f9fbd554
+153 SLT             ; 01 | 00 | 24 | 64 | ff | 20 | 00 | 04 | 64 | 45 | 4a | f9fbd554      signed less than comparison. We check if 0x43 (= 67) is less than (<) 0x64 (=100). I think 100 is the whole calldata (4bytes selector + offset + length + string as 32 bytes word). I am not sure what this is used for.
+154 PUSH2 00a6      ; 00a6 | 01 | 00 | 24 | 64 | ff | 20 | 00 | 04 | 64 | 45 | 4a | f9fbd554   JUMP to instruction nb 166 if it is 1 (the comparison before was true)
 157 JUMPI   
 
-// 2.2) load the string length from the calldata into the stack
-// 2.3) calculate the offset to load the string itself
-166 JUMPDEST        00 | 24 | 64 | ff | 20 | 00 | 04 | 64 | 45 | 4a | f9fbd554
-167 DUP2            24 | 00 | 24 | 64 | ff | 20 | 00 | 04 | 64 | 45 | 4a | f9fbd554
-168 CALLDATALOAD    12 | 00 | 24 | 64 | ff | 20 | 00 | 04 | 64 | 45 | 4a | f9fbd554         Here we have loaded the string length 0x12 (= 18 characters) onto the stack
-169 PUSH2 00b6      00b6 | 12 | 00 | 24 | 64 | ff | 20 | 00 | 04 | 64 | 45 | 4a | f9fbd554
-172 DUP5            64 | 00b6 | 12 | 00 | 24 | 64 | ff | 20 | 00 | 04 | 64 | 45 | 4a | f9fbd554
-173 DUP3            12 | 64 | 00b6 | 12 | 00 | 24 | 64 | ff | 20 | 00 | 04 | 64 | 45 | 4a | f9fbd554
-174 PUSH1 20        20 | 12 | 64 | 00b6 | 12 | 00 | 24 | 64 | ff | 20 | 00 | 04 | 64 | 45 | 4a | f9fbd554
-176 DUP7            24 | 20 | 12 | 64 | 00b6 | 12 | 00 | 24 | 64 | ff | 20 | 00 | 04 | 64 | 45 | 4a | f9fbd554
-177 ADD             44 | 12 | 64 | 00b6 | 12 | 00 | 24 | 64 | ff | 20 | 00 | 04 | 64 | 45 | 4a | f9fbd554           here after manipulating the stack, we obtain 68 (0x44). This will be the next offset probably used to load the string itself?
-178 PUSH2 004f      004f | 44 | 12 | 64 | 00b6 | 12 | 00 | 24 | 64 | ff | 20 | 00 | 04 | 64 | 45 | 4a | f9fbd554
-181 JUMP            // JUMP to instruction nb 79 (0x004f)
+; 2.2) load the string length from the calldata into the stack
+; 2.3) calculate the offset to load the string itself
+166 JUMPDEST        ; 00 | 24 | 64 | ff | 20 | 00 | 04 | 64 | 45 | 4a | f9fbd554
+167 DUP2            ; 24 | 00 | 24 | 64 | ff | 20 | 00 | 04 | 64 | 45 | 4a | f9fbd554
+168 CALLDATALOAD    ; 12 | 00 | 24 | 64 | ff | 20 | 00 | 04 | 64 | 45 | 4a | f9fbd554         Here we have loaded the string length 0x12 (= 18 characters) onto the stack
+169 PUSH2 00b6      ; 00b6 | 12 | 00 | 24 | 64 | ff | 20 | 00 | 04 | 64 | 45 | 4a | f9fbd554
+172 DUP5            ; 64 | 00b6 | 12 | 00 | 24 | 64 | ff | 20 | 00 | 04 | 64 | 45 | 4a | f9fbd554
+173 DUP3            ; 12 | 64 | 00b6 | 12 | 00 | 24 | 64 | ff | 20 | 00 | 04 | 64 | 45 | 4a | f9fbd554
+174 PUSH1 20        ; 20 | 12 | 64 | 00b6 | 12 | 00 | 24 | 64 | ff | 20 | 00 | 04 | 64 | 45 | 4a | f9fbd554
+176 DUP7            ; 24 | 20 | 12 | 64 | 00b6 | 12 | 00 | 24 | 64 | ff | 20 | 00 | 04 | 64 | 45 | 4a | f9fbd554
+177 ADD             ; 44 | 12 | 64 | 00b6 | 12 | 00 | 24 | 64 | ff | 20 | 00 | 04 | 64 | 45 | 4a | f9fbd554           here after manipulating the stack, we obtain 68 (0x44). This will be the next offset probably used to load the string itself?
+178 PUSH2 004f      ; 004f | 44 | 12 | 64 | 00b6 | 12 | 00 | 24 | 64 | ff | 20 | 00 | 04 | 64 | 45 | 4a | f9fbd554
+181 JUMP            ; JUMP to instruction nb 79 (0x004f)
 
 079 JUMPDEST
-080 PUSH1 00        // more stack manipulation
+080 PUSH1 00        ; more stack manipulation
 082 PUSH2 0062
-085 PUSH2 005d      // push number 93 onto the stack (= a JUMP Destination)
+085 PUSH2 005d      ; push number 93 onto the stack (= a JUMP Destination)
 088 DUP5
 089 PUSH2 012d
 092 JUMP
 093 JUMPDEST
 
-// Don't understand what this check is used for here
+; Don't understand what this check is used for here
 301 JUMPDEST
 302 PUSH1 00
-304 PUSH8 ffffffffffffffff  // we are checking something here, but not sure what (?)
+304 PUSH8 ffffffffffffffff  ; we are checking something here, but not sure what (?)
 313 DUP3
 314 GT
 315 ISZERO
-316 PUSH2 0148    // push number 328 onto the stack (= a JUMP DESTINATION)
+316 PUSH2 0148    ; push number 328 onto the stack (= a JUMP DESTINATION)
 319 JUMPI
 
-// Prepare some JUMP Destinations on the stack
+; Prepare some JUMP Destinations on the stack
 328 JUMPDEST
-329 PUSH2 0151    // push number 337 onto the stack (= a JUMP DESTINATION)
+329 PUSH2 0151    ; push number 337 onto the stack (= a JUMP DESTINATION)
 332 DUP3
-333 PUSH2 01e1    // push 481 onto the stack (= a JUMP DESTINATION)
+333 PUSH2 01e1    ; push 481 onto the stack (= a JUMP DESTINATION)
 336 JUMP
 337 JUMPDEST
 
-// more stack manipulations, but not sure what happen
+; more stack manipulations, but not sure what happen
 481 JUMPDEST
 482 PUSH1 00  
-484 PUSH1 1f      // 1f | 00
-486 NOT           // what does that do?
+484 PUSH1 1f      ; 1f | 00
+486 NOT           ; what does that do?
 487 PUSH1 1f
 489 DUP4
 490 ADD
@@ -419,9 +419,9 @@ The rest of the opcodes are about clearing the stack
 494 SWAP2
 495 SWAP1
 496 POP 
-497 JUMP          // JUMP to instruction number 337
+497 JUMP          ; JUMP to instruction number 337
 
-// not relevant
+; not relevant
 337 JUMPDEST
 338 SWAP1
 339 POP
@@ -436,30 +436,30 @@ The rest of the opcodes are about clearing the stack
 349 JUMP
 350 JUMPDEST
 
-// JUMP somewhere else in the bytecode (not relevant)
+; JUMP somewhere else in the bytecode (not relevant)
 093 JUMPDEST
 094 PUSH2 0108
 097 JUMP
 
-// JUMP somewhere else in the bytecode (not relevant)
+; JUMP somewhere else in the bytecode (not relevant)
 264 JUMPDEST
 265 PUSH1 00
 267 PUSH2 0112
 270 PUSH2 0123
 273 JUMP
 
-// 3) allocate memory to pass the string from the calldata to the memory
-// 3.1) load the current free memory pointer
+; 3) allocate memory to pass the string from the calldata to the memory
+; 3.1) load the current free memory pointer
 291 JUMPDEST
 292 PUSH1 00
 294 PUSH1 40
-296 MLOAD     // load the free memory pointer
+296 MLOAD     ; load the free memory pointer
 297 SWAP1
 298 POP
 299 SWAP1
 300 JUMP
 
-// not relevant
+; not relevant
 274 JUMPDEST
 275 SWAP1
 276 POP
@@ -469,14 +469,14 @@ The rest of the opcodes are about clearing the stack
 282 PUSH2 016d
 285 JUMP
 
-// not relevant
+; not relevant
 365 JUMPDEST
 366 PUSH2 0176
 369 DUP3
 370 PUSH2 01e1
 373 JUMP
 
-// not relevant
+; not relevant
 481 JUMPDEST
 482 PUSH1 00
 484 PUSH1 1f
@@ -492,14 +492,14 @@ The rest of the opcodes are about clearing the stack
 496 POP
 497 JUMP
 
-// 3.2) calculate the new free memory pointer
+; 3.2) calculate the new free memory pointer
 374 JUMPDEST
 375 DUP2
-376 ADD        // probably add 64 bytes (string length + string word), so that we can update the free memory pointer
+376 ADD        ; probably add 64 bytes (string length + string word), so that we can update the free memory pointer
 377 DUP2
-378 DUP2      // not sure to understand what is happening here
+378 DUP2      ; not sure to understand what is happening here
 379 LT
-380 PUSH8 ffffffffffffffff      // same as before, max offset value allowed is max value of uint64
+380 PUSH8 ffffffffffffffff      ; same as before, max offset value allowed is max value of uint64
 389 DUP3
 390 GT
 391 OR
@@ -507,30 +507,30 @@ The rest of the opcodes are about clearing the stack
 393 PUSH2 0195
 396 JUMPI
 
-// 3.3) update the free memory pointer
+; 3.3) update the free memory pointer
 405 JUMPDEST
 406 DUP1
 407 PUSH1 40
-409 MSTORE    // update the free memory pointer (before was)
+409 MSTORE    ; update the free memory pointer (before was)
 410 POP
 411 POP
 412 POP
 413 JUMP
 
-// some stack manipulation (not relevant)
+; some stack manipulation (not relevant)
 286 JUMPDEST
 287 SWAP2
 288 SWAP1
 289 POP
 290 JUMP
 
-// 4.1) write the string length in memory using MSTORE
+; 4.1) write the string length in memory using MSTORE
 098 JUMPDEST
 099 SWAP1
 100 POP
-101 DUP3      // put the string length 0x12 (18 characters) back on top of the stack
-102 DUP2      // put the allocated memory pointer back on top of the stack
-103 MSTORE    // store the string length in memory at memory offset 0x80
+101 DUP3      ; put the string length 0x12 (18 characters) back on top of the stack
+102 DUP2      ; put the allocated memory pointer back on top of the stack
+103 MSTORE    ; store the string length in memory at memory offset 0x80
 104 PUSH1 20
 106 DUP2
 107 ADD
@@ -551,23 +551,23 @@ The rest of the opcodes are about clearing the stack
 133 PUSH2 015e
 136 JUMP
 
-// 4.2) copy the string from the calldata into the memory using CALLDATACOPY opcode
+; 4.2) copy the string from the calldata into the memory using CALLDATACOPY opcode
 350 JUMPDEST
 351 DUP3
 352 DUP2
 353 DUP4
-354 CALLDATACOPY    // copy the string from the calldata into memory
+354 CALLDATACOPY    ; copy the string from the calldata into memory
 355 PUSH1 00
 357 DUP4
 358 DUP4
 359 ADD
-360 MSTORE        // write "0x00" at offset 0xb2 in memory. This is probably to match with the free memory pointer
+360 MSTORE        ; write "0x00" at offset 0xb2 in memory. This is probably to match with the free memory pointer
 361 POP
 362 POP
 363 POP
-364 JUMP          // jump at instruction number 137 (0x89)
+364 JUMP          ; jump at instruction number 137 (0x89)
 
-// stack clearing -> 18 items on the stack
+; stack clearing -> 18 items on the stack
 137 JUMPDEST
 138 POP
 139 SWAP4
@@ -575,9 +575,9 @@ The rest of the opcodes are about clearing the stack
 141 POP
 142 POP     
 143 POP
-144 JUMP  // 14 items left on the stack
+144 JUMP  ; 14 items left on the stack
 
-// more stack clearing -> 13 items left on the stack (previous item was taken for JUMP instruction)
+; more stack clearing -> 13 items left on the stack (previous item was taken for JUMP instruction)
 182 JUMPDEST
 183 SWAP2
 184 POP
@@ -586,9 +586,9 @@ The rest of the opcodes are about clearing the stack
 187 SWAP2
 188 POP
 189 POP
-190 JUMP     // 9 items left on the stack
+190 JUMP     ; 9 items left on the stack
 
-// more stack clearing -> 8 items left on the stack
+; more stack clearing -> 8 items left on the stack
 255 JUMPDEST 
 256 SWAP2
 257 POP
@@ -597,15 +597,15 @@ The rest of the opcodes are about clearing the stack
 260 SWAP2
 261 POP
 262 POP
-263 JUMP    // 4 items left on the stack
+263 JUMP    ; 4 items left on the stack
 
-// more stack clearing -> 3 items left on the stack
+; more stack clearing -> 3 items left on the stack
 069 JUMPDEST  
 070 PUSH2 004c
 073 JUMP
 074 JUMPDEST
 077 POP
-078 JUMP  // 2 items left on the stack
+078 JUMP  ; 2 items left on the stack
 
 074 JUMPDEST
 075 STOP
