@@ -141,7 +141,7 @@ When a parameter is given the data location `memory`, the EVM perform the follow
     3.1. load the free memory pointer
     
     3.2. allocate some memory space (64 bytes), by calculating the new free memory pointer.
-    
+
     3.3. update the free memory pointer (= write the new free memory pointer into 0x80 offset in memory).
 
 4. transfer the string from the calldata to the memory
@@ -152,7 +152,7 @@ When a parameter is given the data location `memory`, the EVM perform the follow
 5. Finally clear the stack with some SWAP and POP instructions
 
 
-```
+```asm
 // 1) load the string offset from the calldata
 213 JUMPDEST
 214 PUSH1 00
@@ -239,6 +239,7 @@ The parameters are the following in our scenario:
 2) source in calldata = 0x44 = 68 bytes (4 bytes selector + 32 bytes for the offset + 32 bytes for the string length, this is where the string start)
 3) number of bytes to copy = 0x12 = 18 in decimal = the number of characters in our string
 
+```asm
 298 JUMPDEST        44 | a0 | 12 | 0173 | a0 | 80 | ...
 299 DUP3            12 | 44 | a0 | 12 | 0173 | a0 | 80 | ...
 300 DUP2            44 | 12 | 44 | a0 | 12 | 0173
@@ -253,24 +254,26 @@ The parameters are the following in our scenario:
 310 POP
 311 POP
 312 JUMP
+```
 
 The rest of the opcodes are about clearing the stack
 
 
 ## Calldata
 
+```
 0xf9fbd554
   0000000000000000000000000000000000000000000000000000000000000020
   0000000000000000000000000000000000000000000000000000000000000012
   416c6c2041626f757420536f6c69646974790000000000000000000000000000
-
+```
 ## Full opcodes (details)
 
 
 <details>
   <summary>Click to see the details of the debugged opcodes</summary>
 
-```
+```asm
 // Free memory pointer
 000 PUSH1 80    
 002 PUSH1 40
