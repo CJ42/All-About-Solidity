@@ -153,7 +153,7 @@ When a parameter is given the data location `memory`, the EVM perform the follow
 
 
 ```asm
-// 1) load the string offset from the calldata
+; 1) load the string offset from the calldata
 213 JUMPDEST
 214 PUSH1 00
 216 DUP3            // here we put back 4 on top of the stack
