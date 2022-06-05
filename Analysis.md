@@ -240,17 +240,17 @@ The parameters are the following in our scenario:
 3) number of bytes to copy = 0x12 = 18 in decimal = the number of characters in our string
 
 ```asm
-298 JUMPDEST        44 | a0 | 12 | 0173 | a0 | 80 | ...
-299 DUP3            12 | 44 | a0 | 12 | 0173 | a0 | 80 | ...
-300 DUP2            44 | 12 | 44 | a0 | 12 | 0173
-301 DUP4            a0 | 44 | 12 | 44 | a0 | 12 | 0173
-302 CALLDATACOPY    44 | a0 | 12 | 0173
-303 PUSH1 00        00 | 44 | a0 | 12 | 0173
-305 DUP4            12 | 00 | 44 | a0 | 12 | 0173
-306 DUP4            a0 | 12 | 00 | 44 | a0 | 12 | 0173
-307 ADD             b2 | 00 | 44 | a0 | 12 | 0173
-308 MSTORE          44 | a0 | 12 | 0173     I am not sure what it does here. It just write "0" at location b2 in memory. Probably irrelevant
-309 POP             // clear the stack  
+298 JUMPDEST        ; 44 | a0 | 12 | 0173 | a0 | 80 | ...
+299 DUP3            ; 12 | 44 | a0 | 12 | 0173 | a0 | 80 | ...
+300 DUP2            ; 44 | 12 | 44 | a0 | 12 | 0173
+301 DUP4            ; a0 | 44 | 12 | 44 | a0 | 12 | 0173
+302 CALLDATACOPY    ; 44 | a0 | 12 | 0173
+303 PUSH1 00        ; 00 | 44 | a0 | 12 | 0173
+305 DUP4            ; 12 | 00 | 44 | a0 | 12 | 0173
+306 DUP4            ; a0 | 12 | 00 | 44 | a0 | 12 | 0173
+307 ADD             ; b2 | 00 | 44 | a0 | 12 | 0173
+308 MSTORE          ; 44 | a0 | 12 | 0173     I am not sure what it does here. It just write "0" at location b2 in memory. Probably irrelevant
+309 POP             ; clear the stack  
 310 POP
 311 POP
 312 JUMP
