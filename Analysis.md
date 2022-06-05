@@ -612,3 +612,209 @@ The rest of the opcodes are about clearing the stack
 ```
 
 </details>
+
+
+
+
+# A number as return parameter
+
+Let's understand the steps performed by the EVM to return a simple number from a function.
+
+1. Put the number to return onto the stack
+2. Load the free memory pointer
+3. Write the number 8 in memory at the free memory pointer
+4. Return 32 bytes from memory at the free memory pointer location (where we previously wrote)
+
+<details>
+  <summary>Details</summary>
+
+```asm
+072 PUSH1 00
+074 PUSH1 08  ; push the number 8 onto the stack
+076 SWAP1
+077 POP
+078 SWAP1
+079 JUMP
+
+051 JUMPDEST
+052 PUSH1 40
+054 MLOAD   ; load the free memory pointer
+055 PUSH1 3e
+057 SWAP2
+058 SWAP1
+059 PUSH1 5d
+061 JUMP
+
+093 JUMPDEST
+094 PUSH1 00
+096 PUSH1 20
+098 DUP3
+099 ADD
+100 SWAP1
+101 POP
+102 PUSH1 70
+104 PUSH1 00
+106 DUP4
+107 ADD
+108 DUP5
+109 PUSH1 50
+111 JUMP
+
+080 JUMPDEST
+081 PUSH1 57
+083 DUP2
+084 PUSH1 76
+086 JUMP
+
+118 JUMPDEST
+119 PUSH1 00
+121 DUP2
+122 SWAP1
+123 POP
+124 SWAP2
+125 SWAP1
+126 POP
+127 JUMP
+
+087 JUMPDEST
+088 DUP3
+089 MSTORE    ; write the number 8 in memory at the free memory pointer
+090 POP
+091 POP
+092 JUMP
+
+112 JUMPDEST
+113 SWAP3
+114 SWAP2
+115 POP
+116 POP
+117 JUMP
+
+062 JUMPDEST
+063 PUSH1 40
+065 MLOAD     
+066 DUP1
+067 SWAP2
+068 SUB     ; need to understand this calculation here
+069 SWAP1 
+070 RETURN  ; return 32 bytes from memory at memory location 0x80
+```
+
+</details>
+
+# A string as a returned parameter
+
+<details>
+  <summary>Details</summary>
+
+```asm
+079 PUSH1 60
+081 PUSH1 40
+083 MLOAD     ; load the free memory pointer
+084 DUP1
+085 PUSH1 40
+087 ADD
+088 PUSH1 40
+090 MSTORE    ; allocate some memory for the returned string, so update the free memory pointer
+091 DUP1
+092 PUSH1 12  ; push 0x12 (= 18) onto the stack. This is the string length (number of characters in the string)
+094 DUP2  
+095 MSTORE    ; store the string length in memory
+096 PUSH1 20
+098 ADD
+099 PUSH32 416c6c2041626f757420536f6c69646974790000000000000000000000000000     ; push the utf8 encoded characters of the string onto the stack
+132 DUP2
+133 MSTORE   ; store the string itself in memory
+134 POP
+135 SWAP1
+136 POP
+137 SWAP1
+138 JUMP  ; jump at instruction number 56 (0x38)
+
+056 JUMPDEST
+057 PUSH1 40
+059 MLOAD   ; load the free memory pointer (don't know why)
+060 PUSH2 0045    
+063 SWAP2
+064 SWAP1
+065 PUSH2 00c4
+068 JUMP    ; jump at instruction number 196 (0x00c4)
+
+; don't know what it is happening here
+196 JUMPDEST
+197 PUSH1 00
+199 PUSH1 20
+201 DUP3
+202 ADD
+203 SWAP1
+204 POP
+205 DUP2
+206 DUP2
+207 SUB
+208 PUSH1 00
+210 DUP4
+211 ADD
+212 MSTORE
+213 PUSH2 00de
+216 DUP2
+217 DUP5
+218 PUSH2 008b
+221 JUMP
+
+; stack manipulation
+139 JUMPDEST
+140 PUSH1 00
+142 PUSH2 0096
+145 DUP3
+146 PUSH2 00e6
+149 JUMP
+
+; don't know what is happening here
+230 JUMPDEST
+231 PUSH1 00
+233 DUP2
+234 MLOAD
+235 SWAP1
+236 POP
+237 SWAP2
+238 SWAP1
+239 POP
+240 JUMP
+
+; don't know what is happening here
+150 JUMPDEST
+151 PUSH2 00a0
+154 DUP2
+155 DUP6
+156 PUSH2 00f1
+159 JUMP
+
+241 JUMPDEST
+242 PUSH1 00
+244 DUP3
+245 DUP3
+246 MSTORE
+247 PUSH1 20
+249 DUP3
+250 ADD
+251 SWAP1
+252 POP
+253 SWAP3
+254 SWAP2
+255 POP
+256 POP
+257 JUMP
+
+; Return the string located at specific location in memory
+069 JUMPDEST
+070 PUSH1 40
+072 MLOAD
+073 DUP1
+074 SWAP2
+075 SUB
+076 SWAP1
+077 RETURN
+```
+
+
+</details>
