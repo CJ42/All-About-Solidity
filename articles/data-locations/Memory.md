@@ -7,6 +7,7 @@ function test() public {
     string memory test = "All About Solidity";
 }
 ```
+
 ```asm
 051 JUMPDEST
 052 STOP
@@ -34,7 +35,9 @@ function test() public {
 112 POP
 113 JUMP
 ```
+
 When we start, the stack looks like this:
+
 ```
 33 | f8a88fd6d
 ```
@@ -50,9 +53,11 @@ The EVM performs 5 main steps here:
 We first load the free memory pointer located at 0x40 in memory
 Our free memory pointer tell us that the first free place in memory is at 0x80. This is what is on top of our stack
 
-054 PUSH1 00    //         00 | 33 | f8a88fd6d
-056 PUSH1 40    //         40 | 00 | 33 | f8a88fd6d
-058 MLOAD       //         80 | 00 | 33 | f8a88fd6d
+```asm
+054 PUSH1 00    ;         00 | 33 | f8a88fd6d
+056 PUSH1 40    ;         40 | 00 | 33 | f8a88fd6d
+058 MLOAD       ;         80 | 00 | 33 | f8a88fd6d
+```
 
 Because we are going to write a string in memory, we have to update our free memory pointer.
 A string, according to the ABI specification is made of two parts: the string length + the string itself.
@@ -64,11 +69,13 @@ What the opcodes do in the next steps is simple. It:
 3. push 0x40 (= the location of the free memory pointer again) onto the stack
 4. update the free memory pointer with the new value via MSTORE
 
-059 DUP1        //         80 | 80 | 00 | 33 | f8a88fd6d
-060 PUSH1 40    //         40 | 80 | 80 | 00 | 33 | f8a88fd6d
-062 ADD         //         c0 | 80 | 00 | 33 | f8a88fd6d
-063 PUSH1 40    //         40 | 80 | 00 | 33 | f8a88fd6d
-065 MSTORE      //         80 | 00 | 33 | f8a88fd6d
+```asm
+059 DUP1        ;         80 | 80 | 00 | 33 | f8a88fd6d
+060 PUSH1 40    ;         40 | 80 | 80 | 00 | 33 | f8a88fd6d
+062 ADD         ;         c0 | 80 | 00 | 33 | f8a88fd6d
+063 PUSH1 40    ;         40 | 80 | 00 | 33 | f8a88fd6d
+065 MSTORE      ;         80 | 00 | 33 | f8a88fd6d
+```
 
 This way, we have allocated memory for the string, at the position 0x80 in memory.
 
@@ -78,10 +85,12 @@ In the next steps, the EVM duplicate the location in memory that we have allocat
 It then push the number 18 (= 0x12 in hex) onto the stack, this corresponding the string length.
 Finally, it duplicates the allocated memory pointer being burried 2 levels from the top of the stack via DUP2, and write the string length via MSTORE
 
-066 DUP1        //         80 | 80 | 00 | 33 | f8a88fd6d
-067 PUSH1 12    //         12 | 80 | 80 | 00 | 33 | f8a88fd6d
-069 DUP2        //         80 | 12 | 80 | 80 | 00 | 33 | f8a88fd6d
-070 MSTORE      //         80 | 80 | 00 | 33 | f8a88fd6d
+```asm
+066 DUP1        ;         80 | 80 | 00 | 33 | f8a88fd6d
+067 PUSH1 12    ;         12 | 80 | 80 | 00 | 33 | f8a88fd6d
+069 DUP2        ;         80 | 12 | 80 | 80 | 00 | 33 | f8a88fd6d
+070 MSTORE      ;         80 | 80 | 00 | 33 | f8a88fd6d
+```
 
 The next step is to write the string in memory. Since 0x80 holds the string length, the string itself will be written will be written in the next 32 bytes word.
 To achieve this, the EVM push 0x20 (= 32 in decimal) and add it to the existing 0x80
@@ -95,23 +104,27 @@ https://onlineutf8tools.com/convert-hexadecimal-to-utf8
 DUP2 enables to remove the memory pointer on top of the stack, so that it can be provided as the first argument to MSTORE.
 Finally MSTORE write the string in memory at location 0xa0
 
-071 PUSH1 20    //         20 | 80 | 80 | 00 | 33 | f8a88fd6d
-073 ADD         //         a0 | 80 | 00 | 33 | f8a88fd6d
-074 PUSH32 416c6c2041626f757420536f6c69646974790000000000000000000000000000 //        416c6c2041626f757420536f6c69646974790000000000000000000000000000 |  a0 | 80 | 00 | 33 | f8a88fd6d
-107 DUP2        //         a0 | 416c6c2041626f757420536f6c69646974790000000000000000000000000000 |  a0 | 80 | 00 | 33 | f8a88fd6d
-108 MSTORE      //         a0 | 80 | 00 | 33 | f8a88fd6d
+```asm
+071 PUSH1 20    ;         20 | 80 | 80 | 00 | 33 | f8a88fd6d
+073 ADD         ;         a0 | 80 | 00 | 33 | f8a88fd6d
+074 PUSH32 416c6;041626f757420536f6c69646974790000000000000000000000000000 //        416c6c2041626f757420536f6c69646974790000000000000000000000000000 |  a0 | 80 | 00 | 33 | f8a88fd6d
+107 DUP2        ;         a0 | 416c6c2041626f757420536f6c69646974790000000000000000000000000000 |  a0 | 80 | 00 | 33 | f8a88fd6d
+108 MSTORE      ;         a0 | 80 | 00 | 33 | f8a88fd6d
+```
 
 Finally, the EVM clear up the stack to go back to the initial location (a jump destination JUMPDEST), at counter 0x33 (= 51 in decimal)
 The last two instructions at counter 051 and 052 simplify are the jump destination and the instruction STOP, telling the EVM to stop running the current instruction process.
 
-109 POP         //         80 | 00 | 33 | f8a88fd6d
-110 SWAP1       //         00 | 80 | 33 | f8a88fd6d
-111 POP         //         80 | 33 | f8a88fd6d
-112 POP         //         33 | f8a88fd6d
+```asm
+109 POP         ;         80 | 00 | 33 | f8a88fd6d
+110 SWAP1       ;         00 | 80 | 33 | f8a88fd6d
+111 POP         ;         80 | 33 | f8a88fd6d
+112 POP         ;         33 | f8a88fd6d
 113 JUMP
---
+; --
 051 JUMPDEST
 052 STOP
+```
 
 ---
 
