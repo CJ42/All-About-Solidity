@@ -130,15 +130,15 @@ When a parameter is given the data location `memory`, the EVM perform the follow
 1. Load the string offset from the calldata (to know where the string is inside the calldata)
 2. Load the string length onto the stack
 
-  2.1. calculate the calldata offset where the string length is located
-  2.2. use this offset to load the string length from the calldata into the stack
-  2.3. calculate the offset to load the string itself.
+    2.1. calculate the calldata offset where the string length is located
+    2.2. use this offset to load the string length from the calldata into the stack
+    2.3. calculate the offset to load the string itself.
 
 3. allocate some memory space to move the string out of the calldata into memory
 
-  3.1. load the free memory pointer
-  3.2. allocate some memory space (64 bytes), by calculating the new free memory pointer.
-  3.3. update the free memory pointer (= write the new free memory pointer into 0x80 offset in memory).
+    3.1. load the free memory pointer
+    3.2. allocate some memory space (64 bytes), by calculating the new free memory pointer.
+    3.3. update the free memory pointer (= write the new free memory pointer into 0x80 offset in memory).
 
 4. transfer the string from the calldata to the memory
 
