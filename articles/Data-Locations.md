@@ -44,6 +44,17 @@ Any variable of complex type like array, struct, mapping or enum must specify a 
 
 ---
 
+## Data Location Rules for Function parameters
+
+The table below give the possible data locations for function parameters, depending on the function visibility.
+
+| Function visibility  | Data location for function parameter can be  |
+|---|---|
+| `external`  | `storage` = :x: **not allowed** <br> `memory` = :white_check_mark: (since 0.6.9) <br> `calldata` = :white_check_mark:  |
+| `public`  | `storage` = :x: **not allowed** <br> `memory` = :white_check_mark: <br> `calldata` = :white_check_mark: (since 0.6.9)  |
+| `internal`  | `storage` = :white_check_mark: <br> `memory` = :white_check_mark: <br> `calldata` = :white_check_mark: (since 0.6.9)  |
+| `private` | `storage` = :white_check_mark: <br> `memory` = :white_check_mark: <br> `calldata` = :white_check_mark: (since 0.6.9)  |
+
 # References
 
 - [Hackernoon - Getting Deep into Ethereum: how data is stored ?](https://hackernoon.com/getting-deep-into-ethereum-how-data-is-stored-in-ethereum-e3f669d96033)
