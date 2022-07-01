@@ -77,7 +77,7 @@ _How is the address of an Ethereum contract computed ?_
 
 ---
 
-## How to define an address variable ?
+## How to define an address variable?
 
 In Solidity, you define a variable as an address type by simply specifying the keyword `address` in front of the variable name.
 
@@ -113,7 +113,7 @@ Address literals that do not pass the checksum test bring up an error message. (
 
 **Address literals** (hexadecimal representation of an address) are by default set as `address payable`.
 
-## address vs address payable ?
+## address vs address payable
 
 The distinction between `address` and `address payable` was introduced with version 0.5.0 of Solidity.
 
