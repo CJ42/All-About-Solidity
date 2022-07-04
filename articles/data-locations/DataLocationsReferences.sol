@@ -44,7 +44,9 @@ contract DataLocationsReferences {
         /// bytes storage x;
         /// bytes memory y = x;
 
-        // this is valid too. It will copy what is in memory at b into memory pointed by e;
+        // this is valid too. `e` now points to same location in memory than `b`;
+        // if the variable `b` is edited, so will be `e`, as they point to the same location
+        // same the other way around. If the variable `e` is edited, so will be `b`
         bytes memory e = b;
 
         // this is invalid, as here c is a calldata pointer but is uninitialized, so pointing to nothing.
