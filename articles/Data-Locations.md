@@ -62,6 +62,40 @@ The table below give the possible data locations for function parameters, depend
 | `private` | `storage` = :white_check_mark: <br> `memory` = :white_check_mark: <br> `calldata` = :white_check_mark: (since 0.6.9)  |
 
 
+## Data Location in Function Body
+
+Inside functions, all three data locations can be specified, no matter the function visibility. However, some specific rules exist for assignment between references, or to the data at the data location directly. The tables below summarize them.
+
+**For `storage`**:
+
+| `storage` references can be assigned a: | |
+|---|:---:|
+| state variable directly  | ✅  |
+| state variable via `storage` reference | ✅  |
+| `memory` reference  | ❌  |
+| calldata value directly  | ❌  |
+| calldata value via `calldata` reference   | ❌  |
+
+**For `memory`**:
+
+| `memory` references can be assigned a: | |
+|---|:---:|
+| state variable directly  | ✅  |
+| state variable via `storage` reference | ✅  |
+| `memory` reference  | ✅  |
+| calldata value directly  | ✅  |
+| calldata value via `calldata` reference   | ✅  |
+
+**For `calldata`**:
+
+| `calldata` references can be assigned a: | |
+|---|:---:|
+| state variable directly  | ❌  |
+| state variable via `storage` reference | ❌  |
+| `memory` reference  | ❌  |
+| calldata value directly  | ✅  |
+| calldata value via `calldata` reference   | ✅  |
+
 ## When to use the keywords Storage, Memory and CallData ?
 
 Any variable of complex type like array, struct, mapping or enum must specify a data location.
