@@ -69,7 +69,7 @@ contract DataLocationsReferences {
         bytes memory b;
         bytes calldata c;
 
-        // it's probably the same than storage.
+        // for calldata, the same rule than for storage applies.
         // calldata pointers can only reference to the actual calldata or other calldata pointers.
     }
 }
