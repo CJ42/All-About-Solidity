@@ -7,6 +7,8 @@ There are 4 main visibilities that can be assigned to functions in Solidity
 * `Internal` > The function is visible by the contract itself and contracts derived from it.
 * `External` > The function is visible only by external contracts / addresses. It can't be called by a function within the contract.
 
+One extra note to mention is that only `public` and `external` functions can be made `payable`, not `internal` and `private` functions.
+
 # View vs Pure ?
 Functions can also accept different keywords. These messages are mentioned by the Solidity compiler. Here are some explanations about these two keywords.
 * View functions can read contract's storage, but can't modify the contract storage. Therefore, they are ideal as getters.
