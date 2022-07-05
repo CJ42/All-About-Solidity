@@ -1,16 +1,20 @@
-# Solidity Tutorial : all about Storage, Memory and CallData
+# Solidity Tutorial : all about Data Locations
 
 You will find this topic probably as the most challenging. The table below is an overview of each data location available, with mention if read and write to it is allowed. For more details on each data location, read the section for each data location below.
 
-| Data Location  | :mag: Read  | :pencil2: Write  |
-|---|---|---|
-| Storage  | :white_check_mark:  | :white_check_mark:  |
-| Memory  | :white_check_mark:   | :white_check_mark:  |
-| Calldata  | :white_check_mark:  | :x:  |
-| Stack  | :white_check_mark:  | :white_check_mark:  |
-| Code  | :white_check_mark:  | :x:  |
+| Data Location | :mag: Read         | :pencil2: Write    |
+| ------------- | ------------------ | ------------------ |
+| Storage       | :white_check_mark: | :white_check_mark: |
+| Memory        | :white_check_mark: | :white_check_mark: |
+| Calldata      | :white_check_mark: | :x:                |
+| Stack         | :white_check_mark: | :white_check_mark: |
+| Code          | :white_check_mark: | :x:                |
 
 ---
+
+**When to use the keywords `storage`, `memory` and `calldata`?**
+
+Any variable of complex type like array, struct, mapping or enum must specify a data location.
 
 ### Storage
 
@@ -40,13 +44,11 @@ Memory is short and cheap !
 
 CallData is almost free but has a limited size !
 
-
 ### Stack
 
 The Stack hold small local variables. However, it can hold only a limited number of values. The Stack in Ethereum has maximum size of 1024 elements.
 
 Finishes once a function finishes its execution.
-
 
 ---
 
@@ -54,13 +56,12 @@ Finishes once a function finishes its execution.
 
 The table below give the possible data locations for function parameters, depending on the function visibility.
 
-| Function visibility  | Data location for function parameter can be  |
-|---|---|
-| `external`  | `storage` = :x: **not allowed** <br> `memory` = :white_check_mark: (since 0.6.9) <br> `calldata` = :white_check_mark:  |
-| `public`  | `storage` = :x: **not allowed** <br> `memory` = :white_check_mark: <br> `calldata` = :white_check_mark: (since 0.6.9)  |
-| `internal`  | `storage` = :white_check_mark: <br> `memory` = :white_check_mark: <br> `calldata` = :white_check_mark: (since 0.6.9)  |
-| `private` | `storage` = :white_check_mark: <br> `memory` = :white_check_mark: <br> `calldata` = :white_check_mark: (since 0.6.9)  |
-
+| Function visibility | Data location for function parameter can be                                                                           |
+| ------------------- | --------------------------------------------------------------------------------------------------------------------- |
+| `external`          | `storage` = :x: **not allowed** <br> `memory` = :white_check_mark: (since 0.6.9) <br> `calldata` = :white_check_mark: |
+| `public`            | `storage` = :x: **not allowed** <br> `memory` = :white_check_mark: <br> `calldata` = :white_check_mark: (since 0.6.9) |
+| `internal`          | `storage` = :white_check_mark: <br> `memory` = :white_check_mark: <br> `calldata` = :white_check_mark: (since 0.6.9)  |
+| `private`           | `storage` = :white_check_mark: <br> `memory` = :white_check_mark: <br> `calldata` = :white_check_mark: (since 0.6.9)  |
 
 ## Data Location in Function Body
 
@@ -68,38 +69,153 @@ Inside functions, all three data locations can be specified, no matter the funct
 
 **For `storage`**:
 
-| `storage` references can be assigned a: | |
-|---|:---:|
-| state variable directly  | ✅  |
-| state variable via `storage` reference | ✅  |
-| `memory` reference  | ❌  |
-| calldata value directly  | ❌  |
-| calldata value via `calldata` reference   | ❌  |
+| `storage` references can be assigned a: |     |
+| --------------------------------------- | :-: |
+| state variable directly                 | ✅  |
+| state variable via `storage` reference  | ✅  |
+| `memory` reference                      | ❌  |
+| calldata value directly                 | ❌  |
+| calldata value via `calldata` reference | ❌  |
 
 **For `memory`**:
 
-| `memory` references can be assigned a: | |
-|---|:---:|
-| state variable directly  | ✅  |
-| state variable via `storage` reference | ✅  |
-| `memory` reference  | ✅  |
-| calldata value directly  | ✅  |
-| calldata value via `calldata` reference   | ✅  |
+| `memory` references can be assigned a:  |     |
+| --------------------------------------- | :-: |
+| state variable directly                 | ✅  |
+| state variable via `storage` reference  | ✅  |
+| `memory` reference                      | ✅  |
+| calldata value directly                 | ✅  |
+| calldata value via `calldata` reference | ✅  |
 
 **For `calldata`**:
 
-| `calldata` references can be assigned a: | |
-|---|:---:|
-| state variable directly  | ❌  |
-| state variable via `storage` reference | ❌  |
-| `memory` reference  | ❌  |
-| calldata value directly  | ✅  |
-| calldata value via `calldata` reference   | ✅  |
+| `calldata` references can be assigned a: |     |
+| ---------------------------------------- | :-: |
+| state variable directly                  | ❌  |
+| state variable via `storage` reference   | ❌  |
+| `memory` reference                       | ❌  |
+| calldata value directly                  | ✅  |
+| calldata value via `calldata` reference  | ✅  |
 
-## When to use the keywords Storage, Memory and CallData ?
+# Data Locations - Behaviours
 
-Any variable of complex type like array, struct, mapping or enum must specify a data location.
+There are two main things to consider when specifying the data location inside the function body: the **effect**, and the **gas usage**.
 
+Let's use a simple contract as an example to better understand. The contract holds a mapping of struct items in storage. To compare the behaviour of each data location, we will use different functions that use different data location keywords.
+
+- a getter using `storage`.
+- a getter using `memory`.
+- a setter using `storage`.
+- a setter using `memory`.
+
+```solidity
+// SPDX-License-Identifier: Apache-2.0
+pragma solidity ^0.8.0;
+
+contract Garage {
+    struct Item {
+        uint256 units;
+    }
+    mapping(uint256 => Item) items;
+
+    // gas (view) 24025
+    function getItemUnitsStorage(uint _itemIndex) public view returns(uint) {
+        Item storage item = items[_itemIndex];
+        return item.units;
+    }
+
+    // gas (view) 24055
+    function getItemUnitsMemory(uint _itemIndex) public view returns (uint) {
+        Item memory item = items[_itemIndex];
+        return item.units;
+    }
+}
+```
+
+## Getter with storage vs memory
+
+Let's debug the opcodes.
+
+```asm
+; getItemUnitsStorage = 30 instructions
+PUSH1 00   ; 1) manipulate + prepare the stack
+DUP1
+PUSH1 00
+DUP1
+DUP5
+DUP2
+MSTORE     ; 2.1) prepare the memory for hashing (1)
+PUSH1 20
+ADD
+SWAP1
+DUP2
+MSTORE     ; 2.2) prepare the memory for hashing (2)
+PUSH1 20
+ADD
+PUSH1 00
+SHA3       ; 3) compute the storage number to load via hashing
+SWAP1
+POP
+DUP1
+PUSH1 00
+ADD
+SLOAD      ; 4) load mapping value from storage
+SWAP2
+POP
+POP
+SWAP2
+SWAP1
+POP
+JUMP
+JUMPDEST
+
+; getItemUnitsMemory = 47 instructions
+PUSH1 00
+DUP1
+PUSH1 00
+DUP1
+DUP5
+DUP2
+MSTORE
+PUSH1 20
+ADD
+SWAP1
+DUP2
+MSTORE
+PUSH1 20
+ADD
+PUSH1 00
+SHA3
+PUSH1 40  ; <------ additional opcodes start here
+MLOAD     ; 1) load the free memory pointer
+DUP1      ; 2) reserve the free memory pointer by duplicating it
+PUSH1 20
+ADD       ; 3) compute the new free memory pointer
+PUSH1 40
+MSTORE    ; 4) store the new free memory pointer
+SWAP1
+DUP2
+PUSH1 00
+DUP3
+ADD
+SLOAD     ; 5) load mapping value from storage
+DUP2
+MSTORE    ; 6) store mapping value retrieved from storage in memory
+POP
+POP ; <------------ additonal opcodes end here
+SWAP1
+POP
+DUP1
+PUSH1 00
+ADD
+MLOAD
+SWAP2
+POP
+POP
+SWAP2
+SWAP1
+POP
+```
 
 # References
 
