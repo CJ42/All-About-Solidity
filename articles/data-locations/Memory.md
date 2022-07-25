@@ -1,3 +1,56 @@
+# Interacting with memory
+
+## `MSTORE`
+
+## `MLOAD`
+
+
+## `MSIZE`
+
+The `MSIZE` opcode might make you think that it returns the actual size (in bytes) of data stored in memory. It does not.
+
+One way to understand the msize opcode in Solidity is by looking directly at the [Solidity C++ source code](https://github.com/ethereum/solidity/blob/develop/libevmasm/SemanticInformation.cpp#L193).
+
+![image](https://user-images.githubusercontent.com/31145285/180866698-be9c1226-f420-4174-87e6-5d371e44dbb3.png)
+
+The  `MSIZE` opcode returns the highest byte offset that was accessed in memory in the current execution environment (= largest accessed memory index).
+
+See this example below.
+
+```solidity
+pragma solidity ^0.8.0;
+
+contract TestingMsize {
+
+    function test() public pure returns (uint256 freeMemBefore, uint256 freeMemAfter, uint256 memorySize) {
+        // before allocating new memory
+        assembly {
+            freeMemBefore := mload(0x40)
+        }
+
+        bytes memory data = hex"cafecafecafecafecafecafecafecafecafecafecafecafecafecafecafecafe";
+
+        // after allocating new memory
+        assembly {
+            // freeMemAfter = freeMemBefore + 32 bytes for length of data + data value (32 bytes long)
+            // = 128 (0x80) + 32 (0x20) + 32 (0x20) = 0xc0
+            freeMemAfter := mload(0x40)
+
+            // now we try to access something further in memory than the new free memory pointer :)
+            let whatIsInThere := mload(freeMemAfter)
+
+            // now msize will return 224.
+            memorySize := msize()
+        }
+    }
+
+}
+```
+
+See the details of the `MSIZE` opcode on [evm.codes](https://www.evm.codes/).
+
+
+
 # A string defined in memory inside the function body
 
 For the Solidity code:
@@ -831,3 +884,11 @@ Let's understand the steps performed by the EVM to return a simple number from a
 
 
 </details>
+
+# References
+
+- [evm.codes](https://www.evm.codes/)
+
+## MSIZE
+- https://www.evm.codes/about#memoryexpansion
+- https://ethereum.stackexchange.com/a/28457/21704
