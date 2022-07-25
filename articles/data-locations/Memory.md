@@ -13,7 +13,7 @@ One way to understand the msize opcode in Solidity is by looking directly at the
 
 ![image](https://user-images.githubusercontent.com/31145285/180866698-be9c1226-f420-4174-87e6-5d371e44dbb3.png)
 
-The  `MSIZE` opcode returns the highest byte offset that was accessed in memory in the current execution environment (= largest accessed memory index).
+The  `MSIZE` opcode returns the highest byte offset that was accessed in memory in the current execution environment (= largest accessed memory index). The size will always be a multiple of word (32 bytes).
 
 See this example below.
 
