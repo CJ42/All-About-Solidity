@@ -987,7 +987,15 @@ Let's now analyze each opcodes.
 159 CALL        ; 5. make the external call to the Target contract, with the calldata to be sent to it (`doSomething()`)
 ```
 
-When debugging this transaction in Remix, pay attention to the 
+When debugging this transaction in Remix, pay attention to what the memory looks like before and after passing the `CALL` opcode.
+
+_Before the `CALL` opcode_
+
+![memory-before-function-call](https://user-images.githubusercontent.com/31145285/181080368-d95e958e-bde9-40ee-978f-4cea0dd7b1e6.png)
+
+_After the `CALL` opcode_
+
+![memory-after-function-call](https://user-images.githubusercontent.com/31145285/181080396-e2acb747-86da-4194-b7b7-11b270d4c939.png)
 
 # References
 
