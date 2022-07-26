@@ -132,7 +132,8 @@ contract Garage {
 }
 ```
 
-## Getter with storage vs memory
+
+## Getter with storage vs memory
 
 Let's debug the opcodes.
 
