@@ -49,139 +49,9 @@ contract TestingMsize {
 
 See the details of the `MSIZE` opcode on [evm.codes](https://www.evm.codes/).
 
+# `memory` references as functions parameters
 
-
-# A string defined in memory inside the function body
-
-For the Solidity code:
-
-```solidity
-function test() public {
-    string memory test = "All About Solidity";
-}
-```
-
-```asm
-051 JUMPDEST
-052 STOP
-053 JUMPDEST    
-054 PUSH1 00    
-056 PUSH1 40    
-058 MLOAD       
-059 DUP1
-060 PUSH1 40
-062 ADD
-063 PUSH1 40
-065 MSTORE
-066 DUP1
-067 PUSH1 12
-069 DUP2
-070 MSTORE
-071 PUSH1 20
-073 ADD
-074 PUSH32 416c6c2041626f757420536f6c69646974790000000000000000000000000000
-107 DUP2
-108 MSTORE
-109 POP
-110 SWAP1
-111 POP
-112 POP
-113 JUMP
-```
-
-When we start, the stack looks like this:
-
-```
-33 | f8a88fd6d
-```
-
-The EVM performs 5 main steps here:
-
-1. Get the free memory pointer
-2. Allocate memory + update the new free memory pointer
-3. Write the string length in memory
-4. Write the string in memory
-5. Clear the stack and stop execution
-
-We first load the free memory pointer located at 0x40 in memory
-Our free memory pointer tell us that the first free place in memory is at 0x80. This is what is on top of our stack
-
-```asm
-054 PUSH1 00    ;         00 | 33 | f8a88fd6d
-056 PUSH1 40    ;         40 | 00 | 33 | f8a88fd6d
-058 MLOAD       ;         80 | 00 | 33 | f8a88fd6d
-```
-
-Because we are going to write a string in memory, we have to update our free memory pointer.
-A string, according to the ABI specification is made of two parts: the string length + the string itself.
-The next step is then to update the free memory pointer, to say to the EVM "I am going to write 2 x 32 bytes words in memory. So the free memory pointer is now going to be 64 bytes further.
-
-What the opcodes do in the next steps is simple. It:
-1. duplicate the current value of the free memory pointer = 0x80
-2. add 0x40 to it (= 64 in decimals, for 64 bytes)
-3. push 0x40 (= the location of the free memory pointer again) onto the stack
-4. update the free memory pointer with the new value via MSTORE
-
-```asm
-059 DUP1        ;         80 | 80 | 00 | 33 | f8a88fd6d
-060 PUSH1 40    ;         40 | 80 | 80 | 00 | 33 | f8a88fd6d
-062 ADD         ;         c0 | 80 | 00 | 33 | f8a88fd6d
-063 PUSH1 40    ;         40 | 80 | 00 | 33 | f8a88fd6d
-065 MSTORE      ;         80 | 00 | 33 | f8a88fd6d
-```
-
-This way, we have allocated memory for the string, at the position 0x80 in memory.
-
-The next step is to write the string length in memory. Our string "All About Solidity" contains 18 characters (including whitespaces).
-
-In the next steps, the EVM duplicate the location in memory that we have allocated for the string (0x80).
-It then push the number 18 (= 0x12 in hex) onto the stack, this corresponding the string length.
-Finally, it duplicates the allocated memory pointer being burried 2 levels from the top of the stack via DUP2, and write the string length via MSTORE
-
-```asm
-066 DUP1        ;         80 | 80 | 00 | 33 | f8a88fd6d
-067 PUSH1 12    ;         12 | 80 | 80 | 00 | 33 | f8a88fd6d
-069 DUP2        ;         80 | 12 | 80 | 80 | 00 | 33 | f8a88fd6d
-070 MSTORE      ;         80 | 80 | 00 | 33 | f8a88fd6d
-```
-
-The next step is to write the string in memory. Since 0x80 holds the string length, the string itself will be written will be written in the next 32 bytes word.
-To achieve this, the EVM push 0x20 (= 32 in decimal) and add it to the existing 0x80
-
-0x20 + 0x80 = 0xa0 -> this will be the next location in memory where the string will be written.
-
-The EVM then push a very long value as you can see. Each byte correspond to the utf8 hex values.
-Paste the string here, and you will get the result "All About Solidity"
-https://onlineutf8tools.com/convert-hexadecimal-to-utf8
-
-DUP2 enables to remove the memory pointer on top of the stack, so that it can be provided as the first argument to MSTORE.
-Finally MSTORE write the string in memory at location 0xa0
-
-```asm
-071 PUSH1 20    ;         20 | 80 | 80 | 00 | 33 | f8a88fd6d
-073 ADD         ;         a0 | 80 | 00 | 33 | f8a88fd6d
-074 PUSH32 416c6;041626f757420536f6c69646974790000000000000000000000000000 //        416c6c2041626f757420536f6c69646974790000000000000000000000000000 |  a0 | 80 | 00 | 33 | f8a88fd6d
-107 DUP2        ;         a0 | 416c6c2041626f757420536f6c69646974790000000000000000000000000000 |  a0 | 80 | 00 | 33 | f8a88fd6d
-108 MSTORE      ;         a0 | 80 | 00 | 33 | f8a88fd6d
-```
-
-Finally, the EVM clear up the stack to go back to the initial location (a jump destination JUMPDEST), at counter 0x33 (= 51 in decimal)
-The last two instructions at counter 051 and 052 simplify are the jump destination and the instruction STOP, telling the EVM to stop running the current instruction process.
-
-```asm
-109 POP         ;         80 | 00 | 33 | f8a88fd6d
-110 SWAP1       ;         00 | 80 | 33 | f8a88fd6d
-111 POP         ;         80 | 33 | f8a88fd6d
-112 POP         ;         33 | f8a88fd6d
-113 JUMP
-; --
-051 JUMPDEST
-052 STOP
-```
-
----
-
-# A string passed as a function argument
+## A string passed as a function argument
 
 For the following Solidity code:
 
@@ -271,7 +141,7 @@ When a parameter is given the data location `memory`, the EVM perform the follow
 405 JUMPDEST
 406 DUP1
 407 PUSH1 40
-409 MSTORE    ; update the free memory pointer (before was)
+409 MSTORE    ; update the free memory pointer
 
 ; 4) write the string in memory
 
@@ -333,6 +203,7 @@ The rest of the opcodes are about clearing the stack
   0000000000000000000000000000000000000000000000000000000000000012
   416c6c2041626f757420536f6c69646974790000000000000000000000000000
 ```
+
 ## Full opcodes (details)
 
 
@@ -680,9 +551,148 @@ The rest of the opcodes are about clearing the stack
 </details>
 
 
+# `memory` references inside functions body
 
 
-# A number as return parameter
+## A string defined in memory inside the function body
+
+For the Solidity code:
+
+```solidity
+function test() public {
+    string memory test = "All About Solidity";
+}
+```
+
+```asm
+051 JUMPDEST
+052 STOP
+053 JUMPDEST    
+054 PUSH1 00    
+056 PUSH1 40    
+058 MLOAD       
+059 DUP1
+060 PUSH1 40
+062 ADD
+063 PUSH1 40
+065 MSTORE
+066 DUP1
+067 PUSH1 12
+069 DUP2
+070 MSTORE
+071 PUSH1 20
+073 ADD
+074 PUSH32 416c6c2041626f757420536f6c69646974790000000000000000000000000000
+107 DUP2
+108 MSTORE
+109 POP
+110 SWAP1
+111 POP
+112 POP
+113 JUMP
+```
+
+When we start, the stack looks like this:
+
+```
+33 | f8a88fd6d
+```
+
+The EVM performs 5 main steps here:
+
+1. Get the free memory pointer
+2. Allocate memory + update the new free memory pointer
+3. Write the string length in memory
+4. Write the string in memory
+5. Clear the stack and stop execution
+
+We first load the free memory pointer located at 0x40 in memory
+Our free memory pointer tell us that the first free place in memory is at 0x80. This is what is on top of our stack
+
+```asm
+054 PUSH1 00    ;         00 | 33 | f8a88fd6d
+056 PUSH1 40    ;         40 | 00 | 33 | f8a88fd6d
+058 MLOAD       ;         80 | 00 | 33 | f8a88fd6d
+```
+
+Because we are going to write a string in memory, we have to update our free memory pointer.
+A string, according to the ABI specification is made of two parts: the string length + the string itself.
+The next step is then to update the free memory pointer, to say to the EVM "I am going to write 2 x 32 bytes words in memory. So the free memory pointer is now going to be 64 bytes further.
+
+What the opcodes do in the next steps is simple. It:
+1. duplicate the current value of the free memory pointer = 0x80
+2. add 0x40 to it (= 64 in decimals, for 64 bytes)
+3. push 0x40 (= the location of the free memory pointer again) onto the stack
+4. update the free memory pointer with the new value via MSTORE
+
+```asm
+059 DUP1        ;         80 | 80 | 00 | 33 | f8a88fd6d
+060 PUSH1 40    ;         40 | 80 | 80 | 00 | 33 | f8a88fd6d
+062 ADD         ;         c0 | 80 | 00 | 33 | f8a88fd6d
+063 PUSH1 40    ;         40 | 80 | 00 | 33 | f8a88fd6d
+065 MSTORE      ;         80 | 00 | 33 | f8a88fd6d
+```
+
+This way, we have allocated memory for the string, at the position 0x80 in memory.
+
+The next step is to write the string length in memory. Our string "All About Solidity" contains 18 characters (including whitespaces).
+
+In the next steps, the EVM duplicate the location in memory that we have allocated for the string (0x80).
+It then push the number 18 (= 0x12 in hex) onto the stack, this corresponding the string length.
+Finally, it duplicates the allocated memory pointer being burried 2 levels from the top of the stack via DUP2, and write the string length via MSTORE
+
+```asm
+066 DUP1        ;         80 | 80 | 00 | 33 | f8a88fd6d
+067 PUSH1 12    ;         12 | 80 | 80 | 00 | 33 | f8a88fd6d
+069 DUP2        ;         80 | 12 | 80 | 80 | 00 | 33 | f8a88fd6d
+070 MSTORE      ;         80 | 80 | 00 | 33 | f8a88fd6d
+```
+
+The next step is to write the string in memory. Since 0x80 holds the string length, the string itself will be written will be written in the next 32 bytes word.
+To achieve this, the EVM push 0x20 (= 32 in decimal) and add it to the existing 0x80
+
+0x20 + 0x80 = 0xa0 -> this will be the next location in memory where the string will be written.
+
+The EVM then push a very long value as you can see. Each byte correspond to the utf8 hex values.
+Paste the string here, and you will get the result "All About Solidity"
+https://onlineutf8tools.com/convert-hexadecimal-to-utf8
+
+DUP2 enables to remove the memory pointer on top of the stack, so that it can be provided as the first argument to MSTORE.
+Finally MSTORE write the string in memory at location 0xa0
+
+```asm
+071 PUSH1 20    ;         20 | 80 | 80 | 00 | 33 | f8a88fd6d
+073 ADD         ;         a0 | 80 | 00 | 33 | f8a88fd6d
+074 PUSH32 416c6;041626f757420536f6c69646974790000000000000000000000000000 //        416c6c2041626f757420536f6c69646974790000000000000000000000000000 |  a0 | 80 | 00 | 33 | f8a88fd6d
+107 DUP2        ;         a0 | 416c6c2041626f757420536f6c69646974790000000000000000000000000000 |  a0 | 80 | 00 | 33 | f8a88fd6d
+108 MSTORE      ;         a0 | 80 | 00 | 33 | f8a88fd6d
+```
+
+Finally, the EVM clear up the stack to go back to the initial location (a jump destination JUMPDEST), at counter 0x33 (= 51 in decimal)
+The last two instructions at counter 051 and 052 simplify are the jump destination and the instruction STOP, telling the EVM to stop running the current instruction process.
+
+```asm
+109 POP         ;         80 | 00 | 33 | f8a88fd6d
+110 SWAP1       ;         00 | 80 | 33 | f8a88fd6d
+111 POP         ;         80 | 33 | f8a88fd6d
+112 POP         ;         33 | f8a88fd6d
+113 JUMP
+; --
+051 JUMPDEST
+052 STOP
+```
+
+---
+
+
+
+
+# The Return statement
+
+Any `return` statement uses the underlying EVM opcode `return`. The `return` opcode always accept 2 parameters: the offset in memory + the number of bytes to return. Therefore, return statement in Solidity always operate on the memory, whatever their data type.
+
+
+## A number as return parameter
 
 Let's understand the steps performed by the EVM to return a simple number from a function.
 
@@ -885,9 +895,49 @@ Let's understand the steps performed by the EVM to return a simple number from a
 
 </details>
 
+# Memory between function calls
+
+Between function calls, a fresh instance of memory is always obtained. This means a **clear and empty memory instance**. This is due to the fact that memory is not persistent between function call.
+
+Take a look at the following two contracts, when debugging a transaction made from the `Source` contract to the `Target` contract.
+
+```solidity
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.0;
+
+contract Source {
+
+    Target target;
+
+    constructor(Target _target) {
+        target = _target;
+    }
+
+    function testIn(string memory input) public {
+        target.testTarget(input);
+    }   
+
+}
+
+contract Target {
+
+    function testTarget(string memory input) public {
+        // do whatever
+    }
+}
+```
+
+![image](https://user-images.githubusercontent.com/31145285/181069249-40c9f50f-8954-4b71-bf32-9fce3efec9ed.png)
+
+
 # References
 
+- [Solidity Documentation - Layout in Memory](https://docs.soliditylang.org/en/v0.8.15/internals/layout_in_memory.html)
 - [evm.codes](https://www.evm.codes/)
+- [Ethereum StackExchange - When should I use calldata and when should I use memory?](https://stackoverflow.com/a/33839164/8245387)
+- [Ethereum StackExchange - Understanding MLOAD Assembly function](https://ethereum.stackexchange.com/questions/9603/understanding-mload-assembly-function/9610)
+- [OpenZeppelin Blog - Ethereum In Depth Part II](https://blog.openzeppelin.com/ethereum-in-depth-part-2-6339cf6bddb9/)
+- [Solwaify (outdoteth) - Memory is better for composability than calldata](https://github.com/outdoteth/solwaifu/blob/a9fa6fe5891ae81867e1f96cfe019d54084d9054/src/ERC20Deployer.sol#L14)
 
 ## MSIZE
 - https://www.evm.codes/about#memoryexpansion
