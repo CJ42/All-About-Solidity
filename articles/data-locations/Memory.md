@@ -929,6 +929,65 @@ contract Target {
 
 ![image](https://user-images.githubusercontent.com/31145285/181069249-40c9f50f-8954-4b71-bf32-9fce3efec9ed.png)
 
+Let's test this scenario to understand what is happening. We are going to deploy and interact with both contracts via the Remix IDE.
+
+We will use the Javascript VM and compile the contracts with solc 0.8.7 without any optimization enabled or runs.
+
+1. deploy `Target` contract.
+2. deploy `Source` contract, providing the `address` of `Target` as a constructor argument.
+3. on the `Source` contract, run the function `callTarget()`
+4. on the console, click on the **Debug** button.
+
+Let's now analyze each opcodes.
+
+```asm
+054 PUSH1 00
+056 DUP1
+057 SLOAD ; load the value for `target` state variable from storage
+058 SWAP1
+059 PUSH2 0100  ; more stack manipulation
+062 EXP
+063 SWAP1
+064 DIV
+065 PUSH20 ffffffffffffffffffffffffffffffffffffffff
+086 AND
+087 PUSH20 ffffffffffffffffffffffffffffffffffffffff
+108 AND
+109 PUSH4 82692679  ; 1. load the function selector of doSomething()
+114 PUSH1 40
+116 MLOAD       ; 2. load the free memory pointer
+117 DUP2
+118 PUSH4 ffffffff
+123 AND
+124 PUSH1 e0    ; 3.1 push 224 (0x0e) on the stack
+126 SHL         ; 3.2 shift the functin selector of doSomething() left by 224 bits, so to prepare the calldata to be sent to the Target contract
+127 DUP2
+128 MSTORE      ; 4. store the calldata to be sent to the Target contract in memory, at memory location pointed to by the free memory pointer
+129 PUSH1 04
+131 ADD
+132 PUSH1 00
+134 PUSH1 40
+136 MLOAD
+137 DUP1
+138 DUP4
+139 SUB
+140 DUP2
+141 PUSH1 00
+143 DUP8
+144 DUP1
+145 EXTCODESIZE ; get the size of the code of the Target address, to ensure it is a contract 
+146 ISZERO      ; if the codesize at Target address is zero, then the address is not a contract, so we will stop execution later
+147 DUP1
+148 ISZERO
+149 PUSH1 9c
+151 JUMPI 
+156 JUMPDEST
+157 POP
+158 GAS
+159 CALL        ; 5. make the external call to the Target contract, with the calldata to be sent to it (`doSomething()`)
+```
+
+When debugging this transaction in Remix, pay attention to the 
 
 # References
 
