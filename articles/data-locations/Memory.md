@@ -92,23 +92,23 @@ When a parameter is given the data location `memory`, the EVM perform the follow
 ; 1) load the string offset from the calldata
 213 JUMPDEST
 214 PUSH1 00
-216 DUP3            ; here we put back 4 on top of the stack
+216 DUP3            ; put back 4 on top of the stack
 217 ADD
-218 CALLDATALOAD    ; here we load the calldata starting at offset/index 4 (so excluding the selector). It will return 0x20, the offset where the string value (length + string itself) start
+218 CALLDATALOAD    ; load the calldata starting at offset 4 (= excluding function selector). Will return 0x20, the offset where the string starts (length + string itself).
 
-; There is also a check to ensure that the string offset is the maximum offset allowed (which is the max uint64 value basically)
+; additional checks to ensure that the string offset is the maximum offset allowed (which is the max uint64 value basically)
 
 ; 2) Load the string length onto the stack
 
-; 2.1) calculate the offset where the offset in the calldata (0x20 + 0x04) where the string length is located
+; 2.1) calculate the offset where the first part (= string length) is located in the calldata (0x20 + 0x04).
 243 JUMPDEST       
 244 PUSH2 00ff     
 247 DUP5            
 248 DUP3           
 249 DUP6            ; prepare the stack by putting back relevant items up onto the stack
-250 ADD             ; Here we add 4 bytes (the selector we discard in the calldata) + the offset we previously loaded (0x20). We obtain 0x24
+250 ADD             ; result = 0x24 = 4 bytes (the function selectored discarded from the calldata) + the offset (0x20) previously loaded.
 251 PUSH2 0091      
-254 JUMP            ; here we jump at instruction 145
+254 JUMP
 
 ; 2.2) load the string length from the calldata onto the stack
 166 JUMPDEST
