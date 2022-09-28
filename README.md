@@ -27,3 +27,18 @@ You will find code snippets and analogies that will help you understand and impr
 | [compiler](./articles/Compiler.md)  	| [inheritance](./articles/Inheritance.md)  	| [variables (in general)](./articles/Variables.md)  	|
 | [`constructor`](./articles/Constructors.md)  	| [`interface`](./articles/Interfaces.md)  	|   	|
 | [control flow](./articles/Control-Flow.md)  	| [`library`(librarie contracts)](./articles/Libraries.md)  	|   	|
+
+
+## References
+
+Below are links to some useful references about Smart Contract Programming in Solidity.
+
+For references related to each specific topic of the smart language, see the **Reference** section at the bottom of each individual page.
+
+- [Ethereum Under the Hood: Algorithms And Data Structures - 0xPoland S01E02](https://www.youtube.com/watch?v=OxofT39TJgg)
+
+- [Designing smart contract architecture](https://medium.com/@ScruffyStudios/designing-smart-contract-architectures-924a8991dfe1)
+
+- [Solidity `delegatecall`: usage and pitfalls](https://medium.com/@jeremythen16/solidity-delegatecall-usage-and-pitfalls-5c37eaa5bd5d)
+
+- [EVM Development Starter Kit](https://freddycoen.medium.com/evm-starter-kit-1790bcc992ef)

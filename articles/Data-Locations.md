@@ -220,4 +220,13 @@ POP
 
 # References
 
+- [About the EVM (https://www.evm.codes)](https://www.evm.codes/about?fork=grayGlacier)
+
 - [Hackernoon - Getting Deep into Ethereum: how data is stored ?](https://hackernoon.com/getting-deep-into-ethereum-how-data-is-stored-in-ethereum-e3f669d96033)
+
+- [Solidity gotchas Part 2 - Storage, Memory and Calldata](https://medium.com/@simon.palmer_42769/solidity-gotchas-part-2-storage-memory-and-calldata-ca697e49d2a7)
+
+- [Under the hood with Solidity reference types](https://medium.com/coinmonks/under-the-hood-with-solidity-reference-types-16b3e4e3559f)
+
+- [Do you know the reference type in Solidity?](https://medium.com/coinmonks/do-you-know-the-reference-types-in-solidity-7a4821ed7937)
+

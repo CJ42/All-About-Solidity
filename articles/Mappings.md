@@ -131,3 +131,8 @@ _show picture_
 |               `variable`               |        :x:         |        :x:         |
 
 - <sub>For arrays, `T` refers to Type and `k` to the length of the array.</sub>
+
+
+# References
+
+- [The story behind mapping in Solidity (Better Programming)](https://betterprogramming.pub/the-story-behind-mapping-in-solidity-e1c428aa8cbe)

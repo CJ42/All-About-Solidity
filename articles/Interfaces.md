@@ -84,6 +84,8 @@ Interfaces have several restrictions, including the following:
 
 # References
 
+- [Solidity get interface id and ERC165](https://nhancv.medium.com/solidity-get-interface-id-and-erc165-190f0e2e3a9)
+
 - Contracts - Solidity 0.5.10 documentation
 Contracts in Solidity are similar to classes in object-oriented languages. They contain persistent data in state…solidity.readthedocs.io
 

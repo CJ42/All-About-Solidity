@@ -486,14 +486,16 @@ Note that all library calls are actual EVM function calls. This means that if yo
 
 # References
 
-[**All you should know about libraries in solidity**  
+- [**All you should know about libraries in solidity**  
 _It’s very important to know about the libraries in solidity while writing Dapps. In simple words, a library is the…_medium.com](https://medium.com/coinmonks/all-you-should-know-about-libraries-in-solidity-dd8bc953eae7 "https://medium.com/coinmonks/all-you-should-know-about-libraries-in-solidity-dd8bc953eae7")[](https://medium.com/coinmonks/all-you-should-know-about-libraries-in-solidity-dd8bc953eae7)
 
-[**Library Driven Development in Solidity**  
+- [**Library Driven Development in Solidity**  
 _A comprehensive review on how to develop more modular, reusable and elegant smart contract systems on top of the…_blog.aragon.org](https://blog.aragon.org/library-driven-development-in-solidity-2bebcaf88736/ "https://blog.aragon.org/library-driven-development-in-solidity-2bebcaf88736/")[](https://blog.aragon.org/library-driven-development-in-solidity-2bebcaf88736/)
 
-[**Solidity libraries**  
+- [**Solidity libraries**  
 _Reference: http://solidity.readthedocs.io/en/v0.4.21/contracts.html_medium.com](https://medium.com/@yangnana11/solidity-libraries-1f04a177803f "https://medium.com/@yangnana11/solidity-libraries-1f04a177803f")[](https://medium.com/@yangnana11/solidity-libraries-1f04a177803f)
 
-[**Contracts — Solidity 0.5.6 documentation**  
+- [**Contracts — Solidity 0.5.6 documentation**  
 _Contracts in Solidity are similar to classes in object-oriented languages. They contain persistent data in state…_solidity.readthedocs.io](https://solidity.readthedocs.io/en/v0.5.9/contracts.html#libraries "https://solidity.readthedocs.io/en/v0.5.9/contracts.html#libraries")[](https://solidity.readthedocs.io/en/v0.5.9/contracts.html#libraries)
+
+- [Solidity gotchas Part 3 - Compile size limitations and librairies](https://medium.com/@simon.palmer_42769/solidity-gotchas-part-3-compile-size-limitations-and-libraries-ab01035a1eef)

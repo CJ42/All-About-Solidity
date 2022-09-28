@@ -150,7 +150,7 @@ The following table display their representation in binary format.
 _picture here_
 
 NB: inputs have white background, results will be highlighted in yellowLet's have a look :
-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+
 - `&` (**AND**) : both bits must be 1s (white rows) to result in true (1 => yellow rows).
 
 _picture here_
@@ -158,7 +158,7 @@ _picture here_
 ```
 a & b; // Result: 0x14  [00010100]
 ```
-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+
 - `|` (**OR**) : at least one of the bits have to be 1 (white rows), to result in true (1 => yellow rows)
 
 _picture here_
@@ -166,7 +166,7 @@ _picture here_
 ```
 a | b; // Result: 0xf7  [11110111]
 ```
-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+
 - `^` (**XOR**) : bitwise exclusive OR
 
 This is the difference between two inputs. One of the inputs have to be 1 and the other one must be 0 to result in true. Simply a[i] != b[i].
@@ -185,7 +185,7 @@ An interesting property is that if you want to know what was the value of origin
 ```
 0xe3 ^ a; // Result: 0x56 == b  [01010110]
 ```
-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+
 - `~` (**Negation**) : bitwise negation
 
 This is also called an inversion operation. With this operation, 0 becomes and 1 and 1 becomes 0.
@@ -211,7 +211,6 @@ function allOnes() returns (bytes1) {
     return bytes1(-1);
 }
 ```
-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 
 
 ---
@@ -224,7 +223,7 @@ function allOnes() returns (bytes1) {
 
 Let's have a look :
 
-- - - 
+--- 
 
 - `<< x` (**left shift of x bits**) : shift a number 3 bits left.
 
@@ -488,3 +487,7 @@ Historically, various methods of endianness have been used in computing, includi
 
 - Bitwise Operations and Bit Manipulation in Solidity, Ethereum
 Yes, Ethereum is the world's computer, though probably the most expensive one. Since storage is the largest…medium.com
+
+## References
+
+- [Bit operations in Solidity](https://joshidaksh.medium.com/bit-operations-in-solidity-e36000f0c7ce)

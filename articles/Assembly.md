@@ -503,3 +503,8 @@ If we analyze carefully, the functional style is simply the reverse notation of 
 ```
 // Draw a picture on Photoshop with the arrows
 ```
+
+
+## References
+
+- [Yul vs Solidity contract comparison](https://medium.com/@jtriley15/yul-vs-solidity-contract-comparison-2b6d9e9dc833)

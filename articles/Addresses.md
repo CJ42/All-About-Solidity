@@ -407,3 +407,10 @@ This article is a guide on how to generate an ECDSA private key and derive its E
 ```solidity
 <address payable>.staticcall(bytes memory) returns (bool, bytes memory)
 ```
+
+
+## References
+
+- [delegatecall in smart contract](https://medium.com/nerd-for-tech/delegate-call-in-smart-contract-431ba5caf576)
+
+- [Mystery revealed about `delegatecall` in Solidity](https://learn.block6.tech/mistery-revealed-about-delegatecall-in-solidity-34d55ce1cafd)

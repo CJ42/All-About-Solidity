@@ -335,3 +335,8 @@ mapping (uint8 => uint8) cardDeck;
 - Enums can't be used as KeyTypes in mappings !
 - You can't return an Enum within a function. This is because Enums types are not part of the ABI.
 - You can't define Enums in an interface if your Solidity compiler version is less than 0.5.0.
+
+
+## References
+
+- [State machine in Solidity](https://medium.com/coinmonks/state-machines-in-solidity-9e2d8a6d7a11)
