@@ -19,3 +19,7 @@ Visibility: keep things closed, and open it up.
 Be very careful with initialize(…) functions!!!
 
 You should never audit your own code. You should get a new pair of eyes, because you are developing and you are in a particular mindset, so you are creating the bug.
+
+## References
+
+- [A Historical Collection of Reentrancy attacks](https://github.com/pcaversaccio/reentrancy-attacks)
