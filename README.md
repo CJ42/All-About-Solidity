@@ -15,19 +15,18 @@ You will find code snippets and analogies that will help you understand and impr
 
 **All About...**
 
-|   	|   	|   	|
-|:---	|:---	|:---	|
-| [`address`](./articles/Addresses.md)  	| [cryptographic functions](./articles/Cryptographic-functions.md)  	| [`mapping`](./articles/Mappings.md)  	|
-| [arrays](./articles/Arrays.md)  	| [Data Location (`storage`, `memory`, `calldata`)](./articles/Data-Locations.md)  	| [`modifier`](./articles/Modifiers.md)  	|
-| [assembly](./articles/Assembly.md)  	| [`enum`](./articles/Enums.md)  	| [numbers](./articles/Numbers.md)  	|
-| [blocks & transaction properties](./articles/Blocks-Txs.md)  	| [error handling](./articles/Error-Handling.md)  	| [`string`](./articles/Strings.md)  	|
-| [`bool`](./articles/Boolean.md)  	| [ether units](./articles/Ether-Units.md)  	| [style](./articles/Style.md)  	|
-| [`bytes`](./articles/Bytes.md)  	| [`event`](./articles/Events.md)  	| [tuples](./articles/Tuples.md)  	|
-| [comments](./articles/Comments.md)  	| [`function`](./articles/Functions.md)  	| [`struct`](./articles/Structs.md)  	|
-| [compiler](./articles/Compiler.md)  	| [inheritance](./articles/Inheritance.md)  	| [variables (in general)](./articles/Variables.md)  	|
-| [`constructor`](./articles/Constructors.md)  	| [`interface`](./articles/Interfaces.md)  	|   	|
-| [control flow](./articles/Control-Flow.md)  	| [`library`(librarie contracts)](./articles/Libraries.md)  	|   	|
-
+|                                                             |                                                                                 |                                                                           |
+| :---------------------------------------------------------- | :------------------------------------------------------------------------------ | :------------------------------------------------------------------------ |
+| [`address`](./articles/Addresses.md)                        | [cryptographic functions](./articles/Cryptographic-functions.md)                | [`mapping`](./articles/Mappings.md)                                       |
+| [arrays](./articles/Arrays.md)                              | [Data Location (`storage`, `memory`, `calldata`)](./articles/Data-Locations.md) | [`modifier`](./articles/Modifiers.md)                                     |
+| [assembly](./articles/Assembly.md)                          | [`enum`](./articles/Enums.md)                                                   | [numbers](./articles/Numbers.md)                                          |
+| [blocks & transaction properties](./articles/Blocks-Txs.md) | [error handling](./articles/Error-Handling.md)                                  | [overriding (for functions, modifiers, etc...)](./articles/Overriding.md) |
+| [`bool`](./articles/Boolean.md)                             | [ether units](./articles/Ether-Units.md)                                        | [`string`](./articles/Strings.md)                                         |
+| [`bytes`](./articles/Bytes.md)                              | [`event`](./articles/Events.md)                                                 | [style](./articles/Style.md)                                              |
+| [comments](./articles/Comments.md)                          | [`function`](./articles/Functions.md)                                           | [tuples](./articles/Tuples.md)                                            |
+| [compiler](./articles/Compiler.md)                          | [inheritance](./articles/Inheritance.md)                                        | [`struct`](./articles/Structs.md)                                         |
+| [`constructor`](./articles/Constructors.md)                 | [`interface`](./articles/Interfaces.md)                                         | [variables (in general)](./articles/Variables.md)                         |
+| [control flow](./articles/Control-Flow.md)                  | [`library`(librarie contracts)](./articles/Libraries.md)                        |                                                                           |
 
 ## References
 
