@@ -1,5 +1,181 @@
 # All About Calldata
 
+## Constructing calldata to be sent via `.call()`
+
+When making external low level call via `address(target_contract).call(calldataPayload)`, there are multiple ways to the build the calldata that will be passed in the tx/msg call.
+
+Below is a summary of all the possible ways to build a calldata payload in Solidity, so it can be sent via a low-level `.call(...)`.
+
+To illustrate with an example, we will imagine the scenario of a `CallerContract` interacting with a `DeployedContract` defined in the snippet below. The `CallerContract` aims to call the `add(uint256)` function in the `DeployedContract`.
+
+```solidity
+contract DeployedContract {
+    uint public result = 0;
+
+    function add(uint256 input) public {
+        result = result + input;
+    }
+}
+
+contract CallerContract {    
+    DeployedContract deployed_contract;
+
+    constructor(DeployedContract deployedContract_) {
+        deployed_contract = deployedContract_;
+    }
+
+    // see examples below of different types
+    // of low level call
+
+}
+```
+
+### Calldata as literal string
+
+```solidity
+function callWithLiteralString() public {
+    bytes memory calldataPayload = "0x1003e2d20000000000000000000000000000000000000000000000000000000000000005";
+    (bool success, ) = address(deployed_contract).call(calldataPayload);
+}
+```
+
+### Calldata as literal hex string
+
+Subtle difference with previous example.
+
+```solidity
+function callWithLiteralHexString() public {
+    bytes memory calldataPayload = hex"1003e2d20000000000000000000000000000000000000000000000000000000000000005";
+    (bool success, ) = address(deployed_contract).call(calldataPayload);
+}
+```
+
+### Calldata by creating the bytes4 selector manually (= first 4 bytes of the keccak256 hash of function signature)
+
+```solidity
+function callWithFunctionSignatureFromHash(uint256 input) public {
+    bytes memory calldataPayload = bytes.concat(
+        bytes4(keccak256("add(uint256)")),
+        abi.encodePacked(input)
+    );
+
+    (bool success, ) = address(deployed_contract).call(calldataPayload);
+}
+```
+
+### Calldata using `abi.encodeWithSignature`
+
+```solidity
+function callWithEncodeWithSignature(uint256 input) public {
+    bytes memory calldataPayload = abi.encodeWithSignature("add(uint256)", input);
+    (bool success, ) = address(deployed_contract).call(calldataPayload);
+}
+```
+
+### Calldata using `abi.encodeWithSelector`, using a `bytes4` value
+
+```solidity
+function callWithEncodeWithSelectorAsLiteral(uint256 input) public {
+    bytes memory calldataPayload = abi.encodeWithSelector(0x1003e2d2, input);
+    (bool success, ) = address(deployed_contract).call(calldataPayload);
+}
+```
+
+### Calldata using `abi.encodeWithSelector`, extracting function selector via `functionName.selector`
+
+```solidity
+function callWithEncodeWithSelectorAsReference(uint256 input) public {
+    bytes memory calldataPayload = abi.encodeWithSelector(deployed_contract.add.selector, input);
+    (bool success, ) = address(deployed_contract).call(calldataPayload);
+}
+```
+
+### Calldata using `abi.encodeCall` using a function pointer (since solc 0.8.11)
+
+```solidity
+function callWithABIEncodeCall(uint input) public { 
+
+    function (uint256) external functionToCall = deployed_contract.add;
+
+    bytes memory calldataPayload = abi.encodeCall(functionToCall, input);
+    (bool success, ) = address(deployed_contract).call(calldataPayload);
+}
+```
+
+### Summary of all possible calldata construction
+
+```solidity
+// SPDX-License-Identifier: GPL-3.0
+pragma solidity ^0.8.0;
+
+contract DeployedContract {
+    uint public result = 0;
+
+    function add(uint256 input) public {
+        result = result + input;
+    }
+}
+
+
+contract CallerContract {    
+    DeployedContract deployed_contract;
+
+    constructor(DeployedContract deployedContract_) {
+        deployed_contract = deployedContract_;
+    }
+
+    // calldata as a literal string
+    function callWithLiteralString() public {
+        bytes memory calldataPayload = "0x1003e2d20000000000000000000000000000000000000000000000000000000000000005";
+        (bool success, ) = address(deployed_contract).call(calldataPayload);
+    }
+
+    // calldata as a literal string (with hex"")
+    function callWithLiteralHexString() public {
+        bytes memory calldataPayload = hex"1003e2d20000000000000000000000000000000000000000000000000000000000000005";
+        (bool success, ) = address(deployed_contract).call(calldataPayload);
+    }
+
+    // calldata with bytes.concat() -> keccak256 hash of the function signature + bytes data
+    function callWithFunctionSignatureFromHash(uint256 input) public {
+        bytes memory calldataPayload = bytes.concat(
+            bytes4(keccak256("add(uint256)")),
+            abi.encodePacked(input)
+        );
+
+        (bool success, ) = address(deployed_contract).call(calldataPayload);
+    }
+
+    // calldata with abi.encodeWithSignature
+    function callWithEncodeWithSignature(uint256 input) public {
+        bytes memory calldataPayload = abi.encodeWithSignature("add(uint256)", input);
+        (bool success, ) = address(deployed_contract).call(calldataPayload);
+    }
+
+    // calldata with abi.encodeWithSelector -> selector as a literal
+    function callWithEncodeWithSelectorAsLiteral(uint256 input) public {
+        bytes memory calldataPayload = abi.encodeWithSelector(0x1003e2d2, input);
+        (bool success, ) = address(deployed_contract).call(calldataPayload);
+    }
+
+    // calldata with abi.encodeWithSelector -> selector as reference via Contract.function.selector
+    function callWithEncodeWithSelectorAsReference(uint256 input) public {
+        bytes memory calldataPayload = abi.encodeWithSelector(deployed_contract.add.selector, input);
+        (bool success, ) = address(deployed_contract).call(calldataPayload);
+    }
+
+    // calldata with abi.encodeCall (since solc 0.8.11)
+    function callWithABIEncodeCall(uint input) public { 
+
+        function (uint256) external functionToCall = deployed_contract.add;
+
+        bytes memory calldataPayload = abi.encodeCall(functionToCall, input);
+        (bool success, ) = address(deployed_contract).call(calldataPayload);
+    }
+
+}
+```
+
 ## Upcoming content
 
 - [] Explain why you can’t use calldata inside internal functions. For instance if you constructed something in memory (e.g: a struct), and try to pass it to an internal function that specify calldata in a parameter. it will not compile. Explain why (good example).
