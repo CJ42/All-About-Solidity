@@ -52,16 +52,28 @@ Finishes once a function finishes its execution.
 
 ---
 
-## Data Location Rules for Function parameters
+## Data Location Rules for function and return parameters
 
 The table below give the possible data locations for function parameters, depending on the function visibility.
 
-| Function visibility | Data location for function parameter can be                                                                           |
-| ------------------- | --------------------------------------------------------------------------------------------------------------------- |
-| `external`          | `storage` = :x: **not allowed** <br> `memory` = :white_check_mark: (since 0.6.9) <br> `calldata` = :white_check_mark: |
-| `public`            | `storage` = :x: **not allowed** <br> `memory` = :white_check_mark: <br> `calldata` = :white_check_mark: (since 0.6.9) |
-| `internal`          | `storage` = :white_check_mark: <br> `memory` = :white_check_mark: <br> `calldata` = :white_check_mark: (since 0.6.9)  |
-| `private`           | `storage` = :white_check_mark: <br> `memory` = :white_check_mark: <br> `calldata` = :white_check_mark: (since 0.6.9)  |
+### For `contract`
+
+| Function visibility   | `storage`             | `memory`                           | `calldata`                          |
+| :-------------------: | :--------------------:|:----------------------------------:|:-----------------------------------:|
+| `external`            | :x: **not allowed**   | :white_check_mark: (since 0.6.9)   | :white_check_mark:                  |
+| `public`              | :x: **not allowed**   | :white_check_mark:                 | :white_check_mark: (since 0.6.9)    |
+| `internal`            | :white_check_mark:    | :white_check_mark:                 | :white_check_mark: (since 0.6.9)    |
+| `private`             | :white_check_mark:    | :white_check_mark:                 | :white_check_mark: (since 0.6.9)    |
+  
+### For `library`
+
+
+| Function visibility   | `storage`             | `memory`                           | `calldata`                          |
+| :-------------------: | :--------------------:|:----------------------------------:|:-----------------------------------:|
+| `external`            | :white_check_mark:    | :white_check_mark:                 | :white_check_mark:                  |
+| `public`              | :white_check_mark:    | :white_check_mark:                 | :white_check_mark:                  |
+| `internal`            | :white_check_mark:    | :white_check_mark:                 | :white_check_mark:                  |
+| `private`             | :white_check_mark:    | :white_check_mark:                 | :white_check_mark:                  |
 
 ## Data Location in Function Body
 
