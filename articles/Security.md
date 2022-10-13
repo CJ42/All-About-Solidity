@@ -23,3 +23,4 @@ You should never audit your own code. You should get a new pair of eyes, because
 ## References
 
 - [A Historical Collection of Reentrancy attacks](https://github.com/pcaversaccio/reentrancy-attacks)
+- [Ioannis Sachinoglou, Read Only Reentrancy, a Novel Vulnerability Class Responsible for $100m+ Funds at Risk (ChainSecurity, Devcon VI)](https://www.youtube.com/watch?v=8D5ZJyU-dX0)
