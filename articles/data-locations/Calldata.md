@@ -244,3 +244,4 @@ function example(bytes calldata input) public {
 ## References
 
 - [Solidity `msg.sender`](https://medium.com/@devrann.simsek/solidity-msg-sender-9072c1561966)
+- [When should I use calldata and when should I use memory? - Ethereum StackExchange](https://ethereum.stackexchange.com/q/74442/21704)
