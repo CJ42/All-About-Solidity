@@ -176,10 +176,66 @@ contract CallerContract {
 }
 ```
 
+## Extracting calldata slices.
+
+We have seen that the calldata is a continuous string of `bytes`. One of the main recent feature of Solidity available sine 0.8.6 is **bytes slices**. 
+
+Bytes slices are only available in calldata as per the current Solidity version. They enable to grab sections of the calldata, by returning any number of bytes. The slice returned is of type `bytes`. 
+
+Calldata bytes slices works by specifying:
+
+- the offset to **start** slicing from.
+- the offset where the slicing should **end**.
+
+Both **start** and **end** are separated by a colon symbol `:`. You can also emit the **start** or the **end**. Omitting the start will default to starting slicing at offset 0. Omitting the end default to slicing up to the last byte in the calldata.
+
+There are two cases where slicing can be used and useful.
+
+1. slicing directly from the whole calldata - `msg.data`.
+
+```solidity
+msg.data[start:end]
+```
+
+2. slice a `bytes` with the data location calldata.
+
+
+```solidity
+function example(bytes calldata input) public {
+    bytes calldata secondThirdBytes = input[1:3];
+}
+```
+
+### Examples
+
+Let's illustrate with some examples. 
+
+**Extract the function selector**
+
+The signature of the function can be extracted by slicing the first 4 bytes of the calldata. This is equivqlent to `msg.sig` (except `msg.sig` will cast to the first 4 bytes automatically. Below, we cast via explicit conversion).
+
+```solidity
+bytes4 selector = bytesmsg.data[:4];
+```
+
+**Extract bytes slices**
+
+Consider as an example the `bytes` data `0xcafecafebeefbeeff00df00d`.
+
+You can extract different part of the calldata using the **start** and **end** as follow:
+
+```solidity
+function example(bytes calldata input) public {
+    bytes calldata cafe = input[:4];
+    bytes calldata beef = input[4:8];
+    bytes calldata food = input[8:];
+}
+
+```
+
 ## Upcoming content
 
 - [] Explain why you can’t use calldata inside internal functions. For instance if you constructed something in memory (e.g: a struct), and try to pass it to an internal function that specify calldata in a parameter. it will not compile. Explain why (good example).
-- [] Explain how to retrieve some part of the calldata, using array slices and calldata offset.
 - [] Explain what is happening under the hood for the following examples.
 - Function takes calldata parameter. A variable inside is defined as calldata. What are the opcodes and what happen under the hood?
 - Function takes calldata parameter. A variable inside defined as memory. What are the opcodes, what is happening under the hood?
