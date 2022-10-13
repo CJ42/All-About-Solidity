@@ -87,6 +87,30 @@ The hash of the signature of the event is one of the topics except you declared 
 
 ---
 
+## Should you emit events before or after external calls?
+
+This relates to the check-effect-interaction pattern. Although this pattern often focuses on 
+
+The check-effect-interaction pattern often applies to contract state, meaning the 2nd step effect refers to making necessary updates to the contract state.
+
+Events are often not considered as an "effect". However, events are state changing operation. They do not change the state of the contract directly, but they do change the state of the blockchain by writing in the receipt logs.
+
+Emitting events after an external call can lead to potential issues in some cases:
+
+### Events emitted out of order.
+
+If any event is emitted in the contract being called, this will lead to an incorrect order of emitted events.
+
+This might be a low severity issue, but it can lead to undefined behaviour in certain Dapps that listen for events and want to react and interact with the contracts depending on the order of the emitted events.
+
+### Not enough gas after external call to emit the event.
+
+If the external call consumes most of the remaining gas left, if the call the succeed but there is not enough gas left after the external to emit the event, this will lead the tx to fail and revert, although the external call was successful.
+
+This issue was reported in the Liquidity audit report from Trail Of Bits. See page 23: https://github.com/trailofbits/publications/blob/master/reviews/Liquity.pdf
+
+![image](https://user-images.githubusercontent.com/31145285/195581324-f27d33f9-7216-4309-b768-efd02a4c0b33.png)
+
 ## To deepen in:
 
 https://ethereum.stackexchange.com/questions/12950/what-are-event-topics
@@ -119,3 +143,5 @@ ethereum/wiki
 
 - What are event topics?
 I know that indexed arguments index the values for those arguments so that filtering will be faster. But what are…ethereum.stackexchange.com
+
+- [Can we assume that events (aka logs) are in sequence? - Ethereum StackExchange](https://ethereum.stackexchange.com/questions/63745/can-we-assume-that-ethereum-events-aka-logs-are-in-sequence)
