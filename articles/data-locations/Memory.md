@@ -1005,6 +1005,7 @@ _After the `CALL` opcode_
 - [Ethereum StackExchange - Understanding MLOAD Assembly function](https://ethereum.stackexchange.com/questions/9603/understanding-mload-assembly-function/9610)
 - [OpenZeppelin Blog - Ethereum In Depth Part II](https://blog.openzeppelin.com/ethereum-in-depth-part-2-6339cf6bddb9/)
 - [Solwaify (outdoteth) - Memory is better for composability than calldata](https://github.com/outdoteth/solwaifu/blob/a9fa6fe5891ae81867e1f96cfe019d54084d9054/src/ERC20Deployer.sol#L14)
+- [In Ethereum Solidity, what is the purpose of the `memory` keyword? - StackOverflow](https://stackoverflow.com/questions/33839154/in-ethereum-solidity-what-is-the-purpose-of-the-memory-keyword)
 
 ## MSIZE
 - https://www.evm.codes/about#memoryexpansion
