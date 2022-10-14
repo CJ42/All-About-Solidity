@@ -178,9 +178,13 @@ contract CallerContract {
 
 ## Extracting calldata slices.
 
-We have seen that the calldata is a continuous string of `bytes`. One of the main recent feature of Solidity available sine 0.8.6 is **bytes slices**. 
+> `bytes` slices is:
+>    - available since Solidity 0.8.6
+>    - only work for `bytes` that point to `calldata` ✅, not `storage` or `memory` ✖️
 
-Bytes slices are only available in calldata as per the current Solidity version. They enable to grab sections of the calldata, by returning any number of bytes. The slice returned is of type `bytes`. 
+Calldata is a continuous string of `bytes`. Using a new feature introduced in Solidity 0.8.6, we can grab sections of the calldata, by returning any number of bytes. The slice returned is of type `bytes`. 
+
+Bytes slices are only available in calldata as per the current Solidity version. 
 
 Calldata bytes slices works by specifying:
 
@@ -215,7 +219,7 @@ Let's illustrate with some examples.
 The signature of the function can be extracted by slicing the first 4 bytes of the calldata. This is equivqlent to `msg.sig` (except `msg.sig` will cast to the first 4 bytes automatically. Below, we cast via explicit conversion).
 
 ```solidity
-bytes4 selector = bytesmsg.data[:4];
+bytes4 selector = bytes4(msg.data[:4]);
 ```
 
 **Extract bytes slices**
