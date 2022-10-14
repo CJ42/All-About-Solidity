@@ -54,9 +54,9 @@ function callWithLiteralHexString() public {
 
 ```solidity
 function callWithFunctionSignatureFromHash(uint256 input) public {
-    bytes memory calldataPayload = bytes.concat(
+    bytes memory calldataPayload = abi.encodePacked(
         bytes4(keccak256("add(uint256)")),
-        abi.encodePacked(input)
+        input
     );
 
     (bool success, ) = address(deployed_contract).call(calldataPayload);
