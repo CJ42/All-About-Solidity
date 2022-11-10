@@ -52,6 +52,11 @@ To understand what is a function signature, we need to go a bit more into the de
 
 
 
+# Unnamed Function parameters
+
+If we don't name the parameters of a function, we can load these parameters manually from the calldata, either in Solidity (using calldata slices) or in assembly.
+
+
 # Recursive Functions : How to prevent Re-Entrancy Attacks ?
 A recursive function is a function that can reference itself and re-call itself several times. They occur in scenario where you have a base case (if) and an induction case (else). 
 Recursive functions are dangerous in Solidity, because they are the gateway for re-entrancy attacks (See the case of the DAO hack for more details). The danger most of the time lies in the induction case. If the base case is reached, the function stops. However, if the induction case is not reached, the function can re-execute again.
