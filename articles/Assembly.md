@@ -504,6 +504,9 @@ If we analyze carefully, the functional style is simply the reverse notation of 
 // Draw a picture on Photoshop with the arrows
 ```
 
+## Security considerations with assembly
+
+Assembly is ok to use but you have to know what is bypassed when using it.
 
 ## References
 
