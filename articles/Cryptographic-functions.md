@@ -27,7 +27,7 @@ Assert that `k != 0` starting from version 0.5.0.
 keccak256(bytes memory) returns (bytes32)
 ```
 
-The k`eccak256()` function enables to compute the Keccak-256 hash of the input.
+The `keccak256()` function enables to compute the Keccak-256 hash of the input.
 
 > **Note:** there used to be an alias for `keccak256` called `sha3`, which was removed in version 0.5.0.
  
