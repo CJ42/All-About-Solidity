@@ -41,3 +41,5 @@ For references related to each specific topic of the smart language, see the **R
 - [Solidity `delegatecall`: usage and pitfalls](https://medium.com/@jeremythen16/solidity-delegatecall-usage-and-pitfalls-5c37eaa5bd5d)
 
 - [EVM Development Starter Kit](https://freddycoen.medium.com/evm-starter-kit-1790bcc992ef)
+
+- [Dragonfly XYZ - Solidity Design Patterns](https://github.com/dragonfly-xyz/useful-solidity-patterns)
