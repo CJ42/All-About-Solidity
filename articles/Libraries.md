@@ -50,7 +50,7 @@ Libraries in Solidity are considered **stateless,** and hence have the following
 
 -   They do not have any storage (so can’t have non-constant state variables)
 -   They can’t hold ethers (so can’t have a **fallback** function)
--   Doesn’t allow payable functions (since they can’t hold ethers)
+-   Don’t allow payable functions (since they can’t hold ethers)
 -   Cannot inherit nor be inherited
 -   Can’t be destroyed (no `selfdestruct()` function since version 0.4.20)
 
@@ -115,8 +115,8 @@ library MathLib {
 
 Library deployment is a bit different from regular smart contract deployment. Here are two scenarios :
 
-1.  **Embedded Library:** If a smart contract is consuming a library which have only **internal functions,** then the EVM simply embeds library into the contract. Instead of using delegate call to call a function, it simply uses JUMP statement(normal method call). There is no need to separately deploy library in this scenario.
-2.  **Linked Library :** On the flip side, if a library contain **public or external functions** then library needs to be deployed. The deployment of library will generate a unique address in the blockchain. This address needs to be linked with calling contract.
+1.  **Embedded Library:** If a smart contract is consuming a library which contains only **internal functions**, then the EVM simply embeds the library into the contract. Instead of using `delegatecall` to call a function, it simply uses the JUMP statement (normal method call). There is no need to deploy the library separately in this scenario.
+2.  **Linked Library :** On the flip side, if a library contain **public or external functions**, then the library needs to be deployed. The deployment will generate a unique address in the blockchain. This address needs to be referenced in the calling contract.
 
 ----------
 
@@ -124,7 +124,7 @@ Library deployment is a bit different from regular smart contract deployment. He
 
 ### Step 1 : Importing the library
 
-Under the `pragma` , just specify the following statement :
+Under the `pragma`, just specify the following statement :
 
 ```solidity
 import LibraryName from “./library-file.sol”;
@@ -164,21 +164,21 @@ contract MyContract {
 ```
 ### Step 2 : Using the Library
 
-To use a library within a smart contract, we use the syntax `**using** LibraryName **for** Type` . This directive can be use to attach library functions (from the library `LibraryName`) to any type (`Type`).
+To use a library within a smart contract, we use the syntax "`using` [LibraryName] `for` [Type]". This directive "attaches" the functions from the library "LibraryName" to the type "Type".
 
 -   **LibraryName** = the name of the library we want to import.
 -   **Type** = the variable type we intend to use the library for. (We can also use the wildcard operator `*` to attach functions from the library to all types).
 
 ```solidity
 // Use the library for unsigned integers  
-**using** MathLib **for** uint;
+using MathLib for uint;
 
-// Use the library for any data type  
-**using** MathLib **for** *;
+// Use the library for all data types
+using MathLib for *;
 ```
 > In both previous situations, _all_ functions from the library are attached to the contract, including those where the type of the first parameter does not match the type of the object. The type is checked at the point the function is called and **function overload resolution is performed.**
 
-By including a library, its data types including library functions are available without having to add further code. When you call a library function, these functions will receive the object they are called on as their first parameter, much like the variable `self` in Python
+By including a library, its data types including library functions are available without having to add further code. When you call a library function, this function will receive the object it is called on as their first parameter, much like the variable `self` in Python
 
 ```solidity
 import {MathLib} from  './lib-file.sol';
@@ -186,14 +186,14 @@ import {MathLib} from  './lib-file.sol';
 using MathLib for uint;
 
 uint a = 10;  
-uint b= 10;
+uint b = 10;
 
 uint c = a.subUint(b);
 ```
 
-We could still do `uint c = a - b;` It will return the same result which is `0`. However our library has some added properties to protect from overflow for example; `assert(a >= b);` which checks to make sure the first operand `a`is greater than or equal to the second operand `b` so that the subtraction operation doesn’t result to a negative value.
+We could still do `uint c = a - b;`: it would return the same result (which is `0`). However, our library comes with some added overflow protection: for example, the `assert(a >= b);` assertion during a subtraction that makes sure the minuend (`a`) is greater than or equal to the subtrahend (`b`), so that the operation doesn’t yield a negative result.
 
-> **I don’t understand :** The `_using A for B;_` directive is active only within the current contract, including within all of its functions, and has no effect outside of the contract in which it is used. The directive may only be used inside a contract, not inside any of its functions.
+> **I don’t understand :** The `using [A] for [B];` directive only has effect within the context of the current contract (including the bodies of its functions), and not outside the contract in which it is used. The directive itself may only appear at contract (and not function) level.
 
   
 
@@ -217,12 +217,12 @@ The `using` keyword allows for calling functions in MathLib **for all functions 
 
 > If library functions are called, their code is executed in the context of the calling contract
 
-Let’s dive a bit deeper into the Solidity documentation. The doc states the following : _“Libraries can be seen as implicit base contracts of the contracts that use them” :_
+Let’s dive a bit deeper into the Solidity documentation. It states that _“Libraries can be seen as implicit base contracts of the contracts that use them”_:
 
 -   They will not be explicitly visible in the inheritance hierarchy…
--   …but calls to library functions look just like calls to functions of explicit base contracts (`L.f()` if `L` is the name of the library).
+-   …but calls to library functions look just like calls to functions of explicit base contracts (i.e. `L.f()`, where `L` is the name of the library).
 
-Calling a function from a library will use a special instruction in the EVM: the `[DELEGATECALL](https://ethervm.io/#F4)` [opcode](https://ethervm.io/#F4) (`CALLCODE` until Homestead, version 0.4.20). This will cause the calling context to be passed to the library, **like if it was some code running in the contract itself**. Let’s look at a code example :
+Calling a function from a library will use a special instruction in the EVM: the [DELEGATECALL](https://ethervm.io/#F4) opcode (`CALLCODE` until Homestead, version 0.4.20). This will cause the calling context to be passed to the library, **like if it was some code running in the contract itself**. Let’s look at a code example :
 
 ```solidity
 pragma solidity ^0.5.0;
@@ -249,19 +249,19 @@ address owner = address(this);
 
 ![](https://cdn-images-1.medium.com/max/1600/1*d6kEYDCSHPpsu8MFodjYEA.png)
 
-If we call `add()` function of the `Math` library from our contract, **the address of** `**MyContract**` **will be returned** and not the library address. The `add()` function is compiled as an external call ( `DELEGATECALL` ) but if we check the address from the `address(this)` (the contract address), we will see our contract address (not the library contract’s address). The same applies for all other `msg` properties ( `msg.value`, `msg.data` and `msg.gas`).
+If we call the `add()` function of the `Math` library from our contract, **the address of** `MyContract` **will be returned** and not the library address. The `add()` function call is compiled as an external call (`DELEGATECALL`), and if we check the value of `address(this)` (the contract address), we will see our contract address (not the library contract’s address). The same applies for all other `msg` properties ( `msg.value`, `msg.data` and `msg.gas`).
 
-> **Warning :** prior to Homestead , `_msg.sender_` and `_msg.value_` changed ! (because of the use of `_CALLCODE_`)
+> **Warning :** prior to Homestead , `msg.sender` and `msg.value` used to be changed! (because of the use of `CALLCODE`)
 
-> **Exception :** Library functions can only be called directly (without the use of `_DELEGATECALL_`) if they do not modify the state (`_view_` or `_pure_` functions)
+> **Exception :** Library functions can only be called directly (without the use of `DELEGATECALL`) if they do not modify the state (i.e. they're marked with `view` or `pure`)
 
 ![](https://cdn-images-1.medium.com/max/1600/1*GLNCjkSdUGkjXFmO90ZQLA.png)
 
-Furthermore, `internal`functions of libraries are visible in all contracts, just as if the library were a base contract. **What ???** Yes that sounds strange. Let’s unpack the process of calling an internal library function, to understand what happen exactly is the following :
+Furthermore, the `internal` functions of a library are visible in all contracts, just as if the library was a base contract for them. **What ???** Yes, that sounds strange. Let’s unpack the process of calling an internal library function to understand what's going on:
 
--   Contract A calls internal function B from library L.
--   At compile time, the EVM **pulls** internal function B into contract A. It would be like if function B was hardcoded in contract A.
--   A regular `JUMP` call will be used instead of a `DELEGATECALL`.
+-   Contract `A` calls an `internal` function `b()` from the library `L`.
+-   At compile time, the EVM **pulls** the internal function `b()` into the contract `A`, as if the function `b()` has been defined inside `A`.
+-   When `b()` is called, a regular `JUMP` opcode is used instead of a `DELEGATECALL`.
 
 Calls to internal functions use the same internal calling convention :
 
@@ -270,11 +270,11 @@ Calls to internal functions use the same internal calling convention :
 
 — — — — — — — — — — — — — — — — — — — — — — — — — — — — — — 
 
-Despite the fact libraries do not have storage, they can modify their linked contract’s storage, by passing a `storage` argument to their function parameters. Hence any modification made by the library does via its function will be saved in the contract’s own storage.
+Despite the fact that libraries do not have storage, they can modify the storage of the calling contract, if the arguments passed to its functions are of the `storage` memory type. Any modification made by a library function to such arguments will be saved in the storage of the calling contract.
 
-Therefore, the keyword `this` will point to the calling contract, and **refers to the storage of the calling contract** to be precise.
+Therefore, the keyword `this` that appears in a `library` points to the calling contract - more specifically, its **storage**.
 
-Since a library is an isolated piece of code, it can only access state variables of from the storage of the calling contract if they are explicitly supplied. In fact, it would have no way to name them, otherwise. Let’s have a look at a simple example.
+Since a library is an isolated piece of code, it can only access the state variables of the calling contract if they are supplied to it explicitly. In fact, it would have no way to name them, otherwise. Let’s have a look at a simple example:
 
 ```
 // Some code here
@@ -282,24 +282,24 @@ Since a library is an isolated piece of code, it can only access state variables
 
 ### We want to use our library functions !
 
-Ok enough theory, let’s look at some practical examples ! :)
+Ok, enough theory, let’s look at some practical examples! :)
 
-To use a library function, we select the variable we want to apply the library function to and add a `.` followed by the library function name we want to use. `Type variable = variable.libraryFunction(Type argument)`.
+To use a library function, we select the variable we want to apply the library function to and add a `.` followed by the library function name we want to use: `[Type] variable = variable.libraryFunction([Type] argument)`.
 
-Here is an example below.
+Here is an example:
 
 ```solidity
 pragma solidity ^0.5.0;
 
 contract MyContract {  
       
-    using MathLib for uint;  
-      
-    uint256 a = 10;  
-    uint256 b= 10;
+using MathLib for uint;  
 
-uint256 c = a.add(b);  
-      
+uint256 a = 10;  
+uint256 b = 10;
+
+uint256 c = a.add(b);
+
 }
 
 library MathLib {  
@@ -316,13 +316,13 @@ library MathLib {
 
 ## 6. Understanding functions in libraries
 
-A library can have functions which are not implemented (like in interfaces). As a result, these type of functions have to be declared as public or external. They can’t be internal or external.
+A library can have functions which are not implemented (like in interfaces). As a result, these functions have to be declared as either `public` or `external`. They can’t be `internal` or `external`:
 
 ![](https://cdn-images-1.medium.com/max/1600/1*bTFYv6DlXoNDs06Gt6AIeQ.png)
 
-A picture is worth a thousand words !
+A picture is worth a thousand words!
 
-Here is our internal function implemented in our `testConnection()` function :
+Here is the implemented version of our `internal` `testConnection()` function:
 
 ```solidity
 function testConnection(address _from, address _to) internal returns(bool) {  
@@ -333,7 +333,7 @@ function testConnection(address _from, address _to) internal returns(bool) {
  }
 ```
 
-An example of not implemented functions in our situation would be callback functions on connect and disconnect. You would implement your own custom code in the function body. _(I am not sure about that, since it’s the role of interfaces)_
+An example of the not implemented functions in this situation would be the callback functions that would need to be called on connect and disconnect. You would implement your own custom code in the bodies of these functions. _(I am not sure about this, since it’s the role of interfaces)_
 
 ```solidity
 function onConnect() public;  
@@ -345,11 +345,11 @@ function onDisconnect() public;
 
 In the same way that libraries don’t have storage, they don’t have an event log. However, libraries can dispatch events.
 
-Any event created by the library will be saved in the event log of the contract that calls the event emitting function in the library.
+Any event created by the library will be saved in the event log of the contract that calls the event emitting function from the library.
 
-> Only problem is, as of right now, the contract ABI does not reflect the events that the libraries it uses may emit. This confuses clients such as web3, that won’t be able to decode what event was called or figure out how to decode its arguments.
+> The only problem, as of now, is that the contract ABI does not also include the events that may be emitted by the library used inside the contract. This confuses clients (such as the web3 framework), as they won’t be able to decode the event nor its arguments when it's emitted by the library.
 
-We could do a quick hack by defining the event both in the contract and the library ([As shown by this article from Gnosis about the DelegateProxy contract)](https://blog.gnosis.pm/solidity-delegateproxy-contracts-e09957d0f201). This will trick clients into thinking that it was actually the main contract who sent the event and not the library.
+We could do a quick hack by defining the event both in the contract and the library ([As shown by this article from Gnosis about the DelegateProxy contract)](https://blog.gnosis.pm/solidity-delegateproxy-contracts-e09957d0f201). This will trick clients into thinking that it was actually the main contract (and not the library) that has emitted the event.
 
 This is our library :
 
@@ -368,10 +368,10 @@ This is our contract :
 contract Kombucha {  
     using KombuchaLib for KombuchaLib.KombuchaStorage;
 
-// we have to repeat the event declarations in the contract  
-    // in order for some client-side frameworks to detect them  
-    // (otherwise they won't show up in the contract ABI)  
-    event FilledKombucha(uint amountAdded, uint newFillAmount);  
+    // we have to repeat the event declarations in the contract
+    // in order for some client-side frameworks to detect them 
+    // (otherwise they won't show up in the contract ABI)
+    event FilledKombucha(uint amountAdded, uint newFillAmount);
     event DrankKombucha(uint amountDrank, uint newFillAmount);
 
 KombuchaLib.KombuchaStorage private self;  
@@ -384,26 +384,26 @@ _// Need some code here_
 
 ----------
 
-## 8. Mappings in Library = more functionalities !
+## 8. Mappings in Libraries = more functionalities !
 
-Using the `mapping` type inside libraries differ compared to its usage in traditional Solidity smart contracts. Here we will discuss about using it as a parameter type inside a function
+Using the `mapping` type inside libraries differs compared to its usage in traditional Solidity smart contracts. Here we will discuss about using it as a parameter type inside a function
 
 **Extended functionality :**
 
--   You can use a **mapping** as a parameter for any function visibility : **public, private, external and internal.**
+-   In Libraries, you are allowed to define functions with arguments of type `mapping`, for functions of any visibility (`public`, `private`, `external` and `internal`).
 
-In comparison, mappings can only be passed as a parameter for internal or private functions inside contracts.
+In comparison, a `mapping` argument can only be passed to an `internal` or `private` function inside the classic contracts.
 
-> **Warning :** The data location **can only be storage** if a mapping is passed as function parameters
+> **Warning**: The data location **must be storage** if a function argument of type `mapping`
 
-Since we are using a mapping inside a library, we can’t instantiate it inside the library (remember, libraries can’t hold state variables). Let’s look at a _“possible”_ an example of what it could look like:
+However, the `mapping` passed as function argument can’t be instantiated inside the library (remember: libraries can’t hold any state variables). Let’s look at an example of this:
 
 ```solidity
 pragma solidity ^0.5.0;
 
 library Messenger {
 
-event LogFunctionWithMappingAsInput(address from, address to,       string message);
+event LogFunctionWithMappingAsInput(address from, address to, string message);
 
 function sendMessage(address to, mapping (string => string) storage aMapping) public {  
         emit LogFunctionWithMappingAsInput(msg.sender, to, aMapping[“test1”]);  
@@ -412,7 +412,7 @@ function sendMessage(address to, mapping (string => string) storage aMapping) pu
 ```
 ----------
 
-## 9. Use Structs in Libraries
+## 9. The use of Structs in Libraries
 
 ```solidity
 library Library3 {  
@@ -431,13 +431,13 @@ library Library3 {
 }
 ```
 
-> **_Notice_** _how the function_ `_subUint_` _receives a struct as argument. In Solidity v0.4.24, this is not possible in contracts, but possible in Solidity libraries_
+> **_Notice_** _how the function_ `subUint` _receives a struct as argument. In Solidity v0.4.24, this is not allowed in contracts, but is allowed in libraries_
 
 ----------
 
-## 9. Linking libraries with other libraries
+## 10. Linking libraries with other libraries
 
-Libraries can be linked with other libraries and use them in the same way a contract would. This come however with the natural limitations of libraries.
+Libraries can be linked with other libraries and use them in the same way a contract would. This, however, comes with the natural limitations of libraries.
 
 _// Deep dive here_
 
@@ -447,42 +447,42 @@ It is then possible to include libraries inside other libraries, as explained he
 
 ----------
 
-## 10. Use modifiers in libraries
+## 11. Use modifiers in libraries
 
-It is possible to use modifiers in libraries. However, we can’t export them in our contract, because modifiers are compile-time features (a sort of macros).
+It is possible to use modifiers in libraries. However, we can’t export them in our contract, because modifiers are a compile-time feature (a sort of macros).
 
 See this : [https://ethereum.stackexchange.com/questions/68529/solidity-modifiers-in-library](https://ethereum.stackexchange.com/questions/68529/solidity-modifiers-in-library)
 
-Therefore, modifiers only apply to the functions of the library itself, and cannot be used by an external contract of the library.
+Therefore, modifiers can only be used for the functions of the library itself, and not the functions of another contract that uses the library.
 
 ----------
 
-## 11. What you can’t do with library in Solidity ?
+## 12. What you can’t do with a library in Solidity ?
 
--   Libraries can’t hold mutable variables. If you try to add a variable that can be modified, you will get the following error in Remix : `TypeError: library can't have non-constant state variable`
--   Libraries do not have event logs
+-   Libraries can’t hold mutable/non-constant variables. If you try to add such a variable to a library, you will get the following error: `TypeError: library can't have non-constant state variable`.
+-   Libraries do not have event logs.
 -   It is not possible to destroy a library.
--   Library can’t inherit.
+-   Libraries can’t inherit other libraries or contracts.
 
 ----------
 
-## 12. Some already available libraries
+## 13. Some already available libraries
 
-Here is a curated list of some already libraries written in Solidity and their authors :
+Here is a curated list of some existing Solidity libraries, along with their authors:
 
--   [**Modular network**](https://github.com/modular-network/ethereum-libraries) **:** include several modular library utilities to use, such as [**ArrayUtils**](https://github.com/modular-network/ethereum-libraries/blob/master/ArrayUtilsLib/Array256Lib.sol)**,** [**BasicMath**](https://github.com/modular-network/ethereum-libraries/blob/master/BasicMathLib/BasicMathLib.sol)**,** [**CrowdSale**](https://github.com/modular-network/ethereum-libraries/blob/master/CrowdsaleLib/CrowdsaleLib.sol)**,** [**LinkedList**](https://github.com/modular-network/ethereum-libraries/blob/master/LinkedListLib/LinkedListLib.sol)**,** [**StringUtils**](https://github.com/modular-network/ethereum-libraries/blob/master/StringUtilsLib/StringUtilsLib.sol)**,** [**Token**](https://github.com/modular-network/ethereum-libraries/blob/master/TokenLib/TokenLib.sol)**,** [**Vesting**](https://github.com/modular-network/ethereum-libraries/blob/master/VestingLib/VestingLib.sol)  and [**Wallet**](https://github.com/modular-network/ethereum-libraries/tree/master/WalletLib)
--   **OpenZeppelin :** other libraries such as [**Roles**](https://github.com/OpenZeppelin/openzeppelin-solidity/blob/master/contracts/access/Roles.sol)**,** [**ECDSA**](https://github.com/OpenZeppelin/openzeppelin-solidity/blob/master/contracts/cryptography/ECDSA.sol)**,** [**MerkleProof**](https://github.com/OpenZeppelin/openzeppelin-solidity/blob/master/contracts/cryptography/MerkleProof.sol)**,** [**SafeERC20**](https://github.com/OpenZeppelin/openzeppelin-solidity/blob/master/contracts/token/ERC20/SafeERC20.sol)**,** [**ERC165Checker**](https://github.com/OpenZeppelin/openzeppelin-solidity/blob/master/contracts/introspection/ERC165Checker.sol)**,** [**Math**](https://github.com/OpenZeppelin/openzeppelin-solidity/blob/master/contracts/math/Math.sol)**,** [**SafeMath**](https://github.com/OpenZeppelin/openzeppelin-solidity/blob/master/contracts/math/SafeMath.sol)  (to protect from overflow)**,** [**Address**](https://github.com/OpenZeppelin/openzeppelin-solidity/blob/master/contracts/utils/Address.sol)**,** [**Arrays**](https://github.com/OpenZeppelin/openzeppelin-solidity/blob/master/contracts/utils/Arrays.sol)**,**
--   **Dapp-bin** by Ethereum : include interesting libraries like [**IterableMapping**](https://github.com/ethereum/dapp-bin/blob/master/library/iterable_mapping.sol)**,** [**DoublyLinkedList**](https://github.com/ethereum/dapp-bin/blob/master/library/linkedList.sol)**,** and another  [**StringUtils**](https://github.com/ethereum/dapp-bin/blob/master/library/stringUtils.sol)
+-   [**Modular network**](https://github.com/modular-network/ethereum-libraries): includes several modular library utilities, such as [**ArrayUtils**](https://github.com/modular-network/ethereum-libraries/blob/master/ArrayUtilsLib/Array256Lib.sol), [**BasicMath**](https://github.com/modular-network/ethereum-libraries/blob/master/BasicMathLib/BasicMathLib.sol), [**CrowdSale**](https://github.com/modular-network/ethereum-libraries/blob/master/CrowdsaleLib/CrowdsaleLib.sol), [**LinkedList**](https://github.com/modular-network/ethereum-libraries/blob/master/LinkedListLib/LinkedListLib.sol), [**StringUtils**](https://github.com/modular-network/ethereum-libraries/blob/master/StringUtilsLib/StringUtilsLib.sol), [**Token**](https://github.com/modular-network/ethereum-libraries/blob/master/TokenLib/TokenLib.sol), [**Vesting**](https://github.com/modular-network/ethereum-libraries/blob/master/VestingLib/VestingLib.sol)  and [**Wallet**](https://github.com/modular-network/ethereum-libraries/tree/master/WalletLib).
+-   **OpenZeppelin**: other libraries such as [**Roles**](https://github.com/OpenZeppelin/openzeppelin-solidity/blob/master/contracts/access/Roles.sol), [**ECDSA**](https://github.com/OpenZeppelin/openzeppelin-solidity/blob/master/contracts/cryptography/ECDSA.sol), [**MerkleProof**](https://github.com/OpenZeppelin/openzeppelin-solidity/blob/master/contracts/cryptography/MerkleProof.sol), [**SafeERC20**](https://github.com/OpenZeppelin/openzeppelin-solidity/blob/master/contracts/token/ERC20/SafeERC20.sol), [**ERC165Checker**](https://github.com/OpenZeppelin/openzeppelin-solidity/blob/master/contracts/introspection/ERC165Checker.sol), [**Math**](https://github.com/OpenZeppelin/openzeppelin-solidity/blob/master/contracts/math/Math.sol), [**SafeMath**](https://github.com/OpenZeppelin/openzeppelin-solidity/blob/master/contracts/math/SafeMath.sol)  (to protect from overflow), [**Address**](https://github.com/OpenZeppelin/openzeppelin-solidity/blob/master/contracts/utils/Address.sol), [**Arrays**](https://github.com/OpenZeppelin/openzeppelin-solidity/blob/master/contracts/utils/Arrays.sol).
+-   **Dapp-bin** by Ethereum: includes interesting libraries like [**IterableMapping**](https://github.com/ethereum/dapp-bin/blob/master/library/iterable_mapping.sol), [**DoublyLinkedList**](https://github.com/ethereum/dapp-bin/blob/master/library/linkedList.sol) and another [**StringUtils**](https://github.com/ethereum/dapp-bin/blob/master/library/stringUtils.sol).
 
 ----------
 
 ## What I do not understand about libraries in Solidity
 
-For library `view` functions `DELEGATECALL` is used, because there is no combined `DELEGATECALL` and `STATICCALL`. This means library `view` functions do not have run-time checks that prevent state modifications. This should not impact security negatively because library code is usually known at compile-time and the static checker performs compile-time checks. ([Solidity docs](https://solidity.readthedocs.io/en/v0.5.9/contracts.html))
+For the `view` functions of library, the `DELEGATECALL` opcode is used, because there is no combined `DELEGATECALL` and `STATICCALL`. This means that the `view` functions in a library do not have run-time checks that prevent state modifications. This should not impact security negatively because library code is usually known at compile-time and the static checker performs compile-time checks. ([Solidity docs](https://solidity.readthedocs.io/en/v0.5.9/contracts.html))
 
-> “One condition which should be taken care is, library functions will receive the object they are called on as their first parameter (like the `_self_` variable in Python).”
+> One condition which should be taken care of, however, is that library functions will receive the object they are called on as their first parameter (like the `_self_` variable in Python).
 
-Note that all library calls are actual EVM function calls. This means that if you pass memory or value types, a copy will be performed, even of the `self` variable. The only situation where no copy will be performed is when storage reference variables are used.
+Note that all library calls are actual EVM function calls. This means that if you pass `memory` or value types, a copy will be performed, even of the `self` variable. The only situation where no copy will be performed is when `storage` reference variables are used.
 
 # References
 
