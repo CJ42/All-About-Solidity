@@ -26,7 +26,7 @@ You will find code snippets and analogies to help you understand and improve you
 | [comments](./articles/Comments.md)                          | [`function`](./articles/Functions.md)                                           | [tuples](./articles/Tuples.md)                                            |
 | [compiler](./articles/Compiler.md)                          | [inheritance](./articles/Inheritance.md)                                        | [`struct`](./articles/Structs.md)                                         |
 | [`constructor`](./articles/Constructors.md)                 | [`interface`](./articles/Interfaces.md)                                         | [variables (in general)](./articles/Variables.md)                         |
-| [control flow](./articles/Control-Flow.md)                  | [`library`(librarie contracts)](./articles/Libraries.md)                        |                                                                           |
+| [control flow](./articles/Control-Flow.md)                  | [`library`(library contracts)](./articles/Libraries.md)                        |                                                                           |
 
 ## References
 
