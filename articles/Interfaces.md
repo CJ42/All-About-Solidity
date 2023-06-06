@@ -44,9 +44,12 @@ Interfaces are basically limited to what the Contract ABI can represent, and the
 
 Types defined inside interfaces and other contract-like structures can be accessed from other contracts: Token.TokenType or Token.Coin.
 
-That's really weird the following
+Note that prior to Solidity 0.6.0 (up to 0.5.17), interface contracts could be defined as shown below.
 
 ```solidity
+pragma solidity 0.5.17;
+
+// This is the syntax prior to 0.6.0
 // These abstract contracts are only provided to make the
 // interface known to the compiler. Note the function
 // without body. If a contract does not implement all
@@ -56,7 +59,17 @@ contract Config {
 }
 ```
 
-### Inheritance Notes (Really interesting :) )
+Since Solidity 0.6.0 and up to the latest version, such contracts must be marked as `abstract`.
+
+```solidity
+pragma solidity 0.6.0;
+
+abstract contract Config {
+    function lookup(uint id) public virtual returns (address adr);
+}
+```
+
+### Inheritance Notes
 
 > Currently it is undefined whether a contract with a function having no NatSpec will inherit the NatSpec of a parent contract/interface for that same function. (Solidity doc).
 
