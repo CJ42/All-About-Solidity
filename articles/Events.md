@@ -70,7 +70,7 @@ In the Ethereum Blockchain, each transaction has an attached receipt which conta
 
 ## Anonymous Events
 
-Events can be declared as `anonymous` in Solidity. By default, all events will have a topic, which is the function signature. Use anonymous to log events without a topic. Anonymous events will also be part of the ABI.
+Events can be declared as `anonymous` in Solidity. By default, all events will have a topic, which is the event signature. Use anonymous to log events without a topic. Anonymous events will also be part of the ABI.
 
 ```solidity
 event Message(
